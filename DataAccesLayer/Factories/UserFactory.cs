@@ -5,7 +5,7 @@ namespace GameOnUnlimited.DataAccesLayer.Factories
 {
     public class UserFactory
     {
-        private User CreateFromReader(MySqlDataReader mySqlDataReader)
+       /* private User CreateFromReader(MySqlDataReader mySqlDataReader)
         {
             int id = (int)mySqlDataReader["Id"];
             string name = mySqlDataReader["Name"].ToString() ?? string.Empty;
@@ -17,6 +17,6 @@ namespace GameOnUnlimited.DataAccesLayer.Factories
 
         }
         public UserFactory() { }
-
+*/
     }
 }

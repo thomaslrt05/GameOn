@@ -7,7 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Image Source="img/LoginPage.png" Margin="-14,0,14,0"></Image>
+        <Frame x:Name="LandingFrame"></Frame>
+        <ScrollViewer VerticalScrollBarVisibility="Hidden">
+            <Image Source="/img/Landing Page.png" ></Image>
+        </ScrollViewer>
+
+        <Button Click="Button_Page" Margin="726,10,31,387">
+            <Image Source="/img/Profil.png" Width="40" Height="40" />
+        </Button>
+
+
 
     </Grid>
 </Window>

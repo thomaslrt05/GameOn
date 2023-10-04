@@ -8,6 +8,7 @@ namespace GameOnUnlimited.DataAccesLayer
 {
     public class DAL
     {
+        /*
         public static string? ConnectionString { get; set; }
         private UserFactory? _userFact = null;
 
@@ -24,5 +25,6 @@ namespace GameOnUnlimited.DataAccesLayer
                 return _userFact;
             }
         }
+        */
     }
 }
