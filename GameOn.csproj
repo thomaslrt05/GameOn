@@ -8,8 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="img\Landing page.png" />
+    <None Remove="Img\LoginPage.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="img\Landing page.png" />
+    <Resource Include="Img\LoginPage.png" />
   </ItemGroup>
 
 </Project>
