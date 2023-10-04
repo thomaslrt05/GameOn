@@ -7,14 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Frame x:Name="LandingFrame"></Frame>
-        <ScrollViewer VerticalScrollBarVisibility="Hidden">
-            <Image Source="/img/Landing Page.png" ></Image>
-        </ScrollViewer>
+        <Image Source="img/LoginPage.png" Margin="-14,0,14,0"></Image>
+        <TextBlock Foreground="#FFE74C3C" HorizontalAlignment="Right" Margin="0,22,93,368" FontSize="36" Width="210" > Se connecter</TextBlock>
+        <Image Source="img/ConnectButton.png" Margin="488,184,124,146" ></Image>
 
-        <Button Click="Button_Page" Margin="726,10,31,387">
-            <Image Source="/img/Profil.png" Width="40" Height="40" />
-        </Button>
+        <TextBox x:Name="txtPassword" Margin="482,134,118,0" VerticalAlignment="Top" Text="" FontSize="16"/>
+        <TextBox x:Name="Email" Margin="482,162,118,0" VerticalAlignment="Top" Text="" FontSize="16"/>
+        <Button  Margin="510,214,146,176" Click="Login" />
+
 
 
 
