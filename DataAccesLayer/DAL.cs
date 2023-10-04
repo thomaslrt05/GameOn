@@ -10,8 +10,20 @@ namespace GameOnUnlimited.DataAccesLayer
     {
         public static string? ConnectionString { get; set; }
         private UserFactory? _userFact = null;
+        private DepartementFactory? _departementFact = null;
 
+        public DepartementFactory DepartementFact
+        {
+            get
+            {
+                if (_departementFact == null)
+                {
+                    _departementFact = new DepartementFactory();
+                }
 
+                return _departementFact;
+            }
+        }
         public UserFactory UserFact
         {
             get
@@ -24,5 +36,6 @@ namespace GameOnUnlimited.DataAccesLayer
                 return _userFact;
             }
         }
+
     }
 }

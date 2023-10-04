@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GameOnUnlimited.Models
 {
-    internal class User
+    public class User
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -26,6 +27,15 @@ namespace GameOnUnlimited.Models
             Mail = mail;
             Password = password;
             Departement = departement;
+        }
+        public static string Hash(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                var hash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                return hash;
+            }
         }
     }
 }

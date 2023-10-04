@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameOnUnlimited.Models
 {
-    internal class Notification
+    public class Notification
     {
     }
 }
