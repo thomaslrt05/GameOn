@@ -8,6 +8,7 @@ namespace GameOnUnlimited.DataAccesLayer
 {
     public class DAL
     {
+        /*
         public static string? ConnectionString { get; set; }
         private UserFactory? _userFact = null;
         private DepartementFactory? _departementFact = null;

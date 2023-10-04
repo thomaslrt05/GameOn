@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <None Remove="Img\ConnectButton.svg" />
-    <None Remove="Img\LoginPage.png" />
+    <None Remove="img\Landing page.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Img\LoginPage.png" />
+
+    <Resource Include="img\Landing page.png" />
+
   </ItemGroup>
 
 </Project>
