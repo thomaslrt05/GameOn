@@ -8,7 +8,7 @@
         Title="MainWindow" Height="600" Width="800">
     <Grid>
         
-        <Frame  Name="MainFrame" Visibility="Hidden"></Frame>
+        <Frame  Content="{Binding CurrentPage,Mode=TwoWay}" NavigationUIVisibility="Hidden"></Frame>
         
         
         

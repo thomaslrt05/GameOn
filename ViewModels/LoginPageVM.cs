@@ -5,15 +5,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using GameOn.Models;
-using GameOn.DataAccesLayer;
 
 namespace GameOn.ViewModels
 {
-    public class MainWindowVM  : INotifyPropertyChanged
+    internal class LoginPageVM : INotifyPropertyChanged
     {
         #region Inotify
         // Obligatoire par l'implémentation de l'interface INotifyPropertyChanged
@@ -33,54 +30,25 @@ namespace GameOn.ViewModels
 
         private String txtPassword = string.Empty;
 
-        public static MainWindowVM Instance = new MainWindowVM();
+        public static MainWindowVM Instance = MainWindowVM.Instance;
 
-        private Page _currentPage;
 
-        public Page CurrentPage
+        public LoginPageVM()
         {
-            get
-            {
-                // Retourne la valeur de l'attribut privé
-                return _currentPage;
-            }
-            set
-            {
-                // Modifie la valeur de l'attribut privé et notifie la view
-                _currentPage = value;
-                OnPropertyChanged(nameof(CurrentPage));
-            }
+            this.ChangePageCommand = new RelayCommand(OnConnexion, CanConnexion);
         }
 
-        protected MainWindowVM() 
-        {
-
-            CurrentPage = new LoginPage();
-        }
-
-        private void ChangePage(string pageName)
-        {
-            switch(pageName) 
-            {
-                case "LoginPage":
-                    CurrentPage = new LoginPage();
-                    break;
-                case "LandingPage":
-                    CurrentPage = new LandingPage();
-                    break;
-            }
-        }
 
         private ICommand _changePageCommand;
 
-        public ICommand ChangePageCommand 
-        { 
-            get { return _changePageCommand; } 
-            set { _changePageCommand = value; } 
+        public ICommand ChangePageCommand
+        {
+            get { return _changePageCommand; }
+            set { _changePageCommand = value; }
         }
 
 
-        private void OnConnexion(object parameter) 
+        private void OnConnexion(object parameter)
         {
             /*
             string pwd = TxtPassword;
@@ -93,7 +61,8 @@ namespace GameOn.ViewModels
             }
             MessageBox.Show("error");
             */
-            CurrentPage = new LandingPage();
+            MainWindowVM mainWindowVM = MainWindowVM.Instance;
+            mainWindowVM.CurrentPage = new LandingPage();
         }
 
         private bool CanConnexion(object parameter)
@@ -103,6 +72,5 @@ namespace GameOn.ViewModels
 
 
 
-  
     }
 }

@@ -1,5 +1,5 @@
-﻿using GameOnUnlimited.DataAccesLayer;
-using GameOnUnlimited.Models;
+﻿using GameOn.DataAccesLayer;
+using GameOn.Models;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace GameOnUnlimited.DataAccesLayer.Factories
+namespace GameOn.DataAccesLayer.Factories
 {
     public class DepartementFactory
     {

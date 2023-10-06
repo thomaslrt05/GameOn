@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GameOnUnlimited.DataAccesLayer.Factories;
-namespace GameOnUnlimited.DataAccesLayer
+using GameOn.DataAccesLayer.Factories;
+namespace GameOn.DataAccesLayer
 {
     public class DAL
     {
