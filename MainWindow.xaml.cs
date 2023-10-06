@@ -1,4 +1,5 @@
-﻿using GameOnUnlimited.DataAccesLayer;
+﻿using GameOn.ViewModels;
+using GameOnUnlimited.DataAccesLayer;
 using GameOnUnlimited.Models;
 using System;
 using System.Collections.Generic;
@@ -25,11 +26,19 @@ namespace GameOn
         public MainWindow()
         {
             InitializeComponent();
+            // Crée la connexion a la BD
+            /* Serveur KC
             DAL.ConnectionString = "Server=sql.decinfo-cchic.ca;Port=33306;Database=a23_e80_hourglass_gameon;Uid=dev-2334653;Pwd=Sayer123";
+            */
+
+            // Utiliser les VM en implementant INotifyPropertyChanged  
+            this.DataContext = new MainWindowVM();
         }
 
-        private void Login(object sender, RoutedEventArgs e)
+        // Partie Login 
+        private void LoginButton(object sender, RoutedEventArgs e)
         {
+            /* En commentaire car le serveur KC
             string pwd = txtPassword.Text;
             string mail = Email.Text;
             string hash = User.Hash(pwd);
@@ -39,6 +48,9 @@ namespace GameOn
                 MessageBox.Show(user.Password == hash ? "logged in":"error");
             }
             MessageBox.Show("error");
+            */
+            LandingPage landingPage = new LandingPage();
+            landingPage.Show();
         }
     }
 }
