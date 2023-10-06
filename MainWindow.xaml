@@ -7,25 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
     <Grid>
-        <Image Source="img/LoginPage.png" Stretch="UniformToFill"  ></Image>
-        <Frame Name="MainFrame" Visibility="Hidden"></Frame>
-        <Grid>
-          
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Label Content="Login"></Label>
-                <TextBox x:Name="Email" Width="200" Margin="5"/>
-                <Label Content="Mot de passe"></Label>
-                <PasswordBox x:Name="txtPassword" Width="200" Margin="5"/>
-
-                <Button Width="177" Height="39" Click="LoginButton">
-                    <Image Source="./img/ConnectButton.png"/>
-                </Button>
-            </StackPanel>
-        </Grid>
+        
+        <Frame  Name="MainFrame" Visibility="Hidden"></Frame>
+        
         
         
     </Grid>
