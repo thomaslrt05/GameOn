@@ -12,11 +12,14 @@
 
         <Frame x:Name="LandingFrame"></Frame>
         <ScrollViewer VerticalScrollBarVisibility="Hidden">
-            <Image Source="/img/Landing Page.png" ></Image>
+            <Image Source="/img/LandingPage.png" ></Image>
         </ScrollViewer>
 
-        <Button Click="Button_Profil" Margin="737,20,20,377">
-            <Image Source="/img/Profil.png" Width="40" Height="40" />
-        </Button>
+        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="540,6,0,386">
+            <Button Height="30" Width="70" Content="Profil" HorizontalAlignment="Left"  VerticalAlignment="Center" Click="ProfilButton"></Button>
+            <Button Height="30" Width="90" Content="Notifications" HorizontalAlignment="Left"  VerticalAlignment="Center" Click="NotifButton"></Button>
+            <Button Height="30" Width="90" Content="Déconnexion"  VerticalAlignment="Center" Click="LogOutButton"/>
+        </StackPanel>
+
     </Grid>
 </Page>

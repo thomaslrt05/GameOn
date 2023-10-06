@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Img\ConnectButton.png" />
     <None Remove="Img\ConnectButton.svg" />
     <None Remove="img\Landing page.png" />
+    <None Remove="Img\LandingPage.png" />
+    <None Remove="Img\LoginPage.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,9 +21,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Windows\" />
+  </ItemGroup>
 
-    <Resource Include="img\Landing page.png" />
-
+  <ItemGroup>
+    <Resource Include="Img\ConnectButton.png" />
+    <Resource Include="Img\LandingPage.png" />
+    <Resource Include="Img\LoginPage.png" />
   </ItemGroup>
 
 </Project>

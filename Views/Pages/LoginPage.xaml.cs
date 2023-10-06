@@ -13,22 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GameOn
+namespace GameOn.Views.Pages
 {
     /// <summary>
-    /// Logique d'interaction pour LandingPage.xaml
+    /// Logique d'interaction pour LoginPage.xaml
     /// </summary>
-    public partial class LandingPage : Page
+    public partial class LoginPage : Page
     {
-        public LandingPage()
+        public LoginPage()
         {
             InitializeComponent();
         }
-
-        private void Button_Profil(object sender, RoutedEventArgs e)
-        {
-            // Code à exécuter lorsque le bouton (image) est cliqué.
-        }
-
     }
 }
