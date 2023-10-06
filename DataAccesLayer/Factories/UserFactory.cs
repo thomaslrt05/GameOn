@@ -1,7 +1,7 @@
-﻿using GameOnUnlimited.Models;
+﻿using GameOn.Models;
 using MySql.Data.MySqlClient;
 
-namespace GameOnUnlimited.DataAccesLayer.Factories
+namespace GameOn.DataAccesLayer.Factories
 {
     public class UserFactory
     {

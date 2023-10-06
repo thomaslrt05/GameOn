@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameOnUnlimited.Models
+namespace GameOn.Models
 {
     public class Departement
     {

@@ -1,6 +1,6 @@
 ﻿using GameOn.ViewModels;
-using GameOnUnlimited.DataAccesLayer;
-using GameOnUnlimited.Models;
+using GameOn.DataAccesLayer;
+using GameOn.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,25 +32,8 @@ namespace GameOn
             */
 
             // Utiliser les VM en implementant INotifyPropertyChanged  
-            this.DataContext = new MainWindowVM();
+            this.DataContext = MainWindowVM.Instance;
         }
 
-        // Partie Login 
-        private void LoginButton(object sender, RoutedEventArgs e)
-        {
-            /* En commentaire car le serveur KC
-            string pwd = txtPassword.Text;
-            string mail = Email.Text;
-            string hash = User.Hash(pwd);
-            User user = new DAL().UserFact.GetByMail(mail);
-            if (user != null)
-            {
-                MessageBox.Show(user.Password == hash ? "logged in":"error");
-            }
-            MessageBox.Show("error");
-            */
-            LandingPage landingPage = new LandingPage();
-            landingPage.Show();
-        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameOn.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace GameOn.Views.Pages
         public LoginPage()
         {
             InitializeComponent();
+            this.DataContext = new LoginPageVM();
         }
     }
 }
