@@ -31,7 +31,6 @@ namespace GameOn.ViewModels
         }
         #endregion
 
-        private String txtPassword = string.Empty;
 
         public static MainWindowVM Instance = new MainWindowVM();
 
@@ -82,17 +81,6 @@ namespace GameOn.ViewModels
 
         private void OnConnexion(object parameter) 
         {
-            /*
-            string pwd = TxtPassword;
-            string mail = Email;
-            string hash = User.Hash(pwd);
-            User user = new DAL().UserFact.GetByMail(mail);
-            if (user != null)
-            {
-                MessageBox.Show(user.Password == hash ? "logged in" : "error");
-            }
-            MessageBox.Show("error");
-            */
             CurrentPage = new LandingPage();
         }
 

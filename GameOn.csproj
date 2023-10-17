@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Windows\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Img\ConnectButton.png" />
     <Resource Include="Img\LandingPage.png" />
     <Resource Include="Img\LoginPage.png" />

@@ -4,6 +4,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GameOn"
+      xmlns:ViewModels="clr-namespace:GameOn.ViewModels"
+      d:DataContext="{d:DesignInstance Type=ViewModels:LandingPageVM}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="LandingPage">
@@ -20,6 +22,26 @@
             <Button Height="30" Width="90" Content="Notifications" HorizontalAlignment="Left"  VerticalAlignment="Center" Click="NotifButton"></Button>
             <Button Height="30" Width="90" Content="Déconnexion"  VerticalAlignment="Center" Click="LogOutButton"/>
         </StackPanel>
+
+        <Grid Margin="71,120,66,41">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                <Button Margin="20" Command="{Binding ButtonSudokuGame}">
+                <Image Source="/img/sudoku.png"/>
+            </Button>
+            </StackPanel>
+        </Grid>
 
     </Grid>
 </Page>

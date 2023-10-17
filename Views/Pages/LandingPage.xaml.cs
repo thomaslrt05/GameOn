@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GameOn.ViewModels;
 
 namespace GameOn
 {
@@ -23,6 +24,7 @@ namespace GameOn
         public LandingPage()
         {
             InitializeComponent();
+            this.DataContext = new LandingPageVM();
         }
 
         private void ProfilButton(object sender, RoutedEventArgs e)
