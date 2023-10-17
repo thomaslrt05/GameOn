@@ -5,8 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameOn.Views.Windows"
         mc:Ignorable="d"
-        Title="ProfilWindow" Height="450" Width="800">
+        Title="ProfilWindow" Height="250" Width="250">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Column="0" Grid.Row="0" Content="Pseudo" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBox Grid.Column="1" Grid.Row="0" Name="pseudoField" Height="30"></TextBox>
+
+        <Label Grid.Column="0" Grid.Row="1" Content="Mot de passe" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBox Grid.Column="1" Grid.Row="1" Name="passwordField" Height="30"></TextBox>
+
+        <Button Content="Retour" Grid.Column="0" Grid.Row="2" Height="50" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
+        <Button Content="Modifier" Grid.Column="1" Grid.Row="2" Height="50" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
         
     </Grid>
 </Window>

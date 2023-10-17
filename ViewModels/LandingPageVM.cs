@@ -1,4 +1,5 @@
 ﻿using GameOn.Views.Pages;
+using GameOn.Views.Windows;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,20 +26,52 @@ namespace GameOn.ViewModels
 
         public LandingPageVM() 
         {
-            this.ButtonSudokuGame = new RelayCommand(ExecuteButtonSudokuGame, CanSudokuGame);
+            this.ButtonSudokuGame = new RelayCommand(ExecuteButtonSudokuGame, CanExecute);
+            this.ButtonLogOut = new RelayCommand(ExecuteLogOut, CanExecute);
+            this.ButtonNotif = new RelayCommand(ExecuteNotif, CanExecute);
+            this.ButtonProfil = new RelayCommand(ExecuteButtonProfil, CanExecute);
         }
 
-        public ICommand ButtonSudokuGame { get; private set; }
+        
 
-        private bool CanSudokuGame(object parameter)
+        private bool CanExecute(object parameter)
         {
             return true;
         }
+
+        public ICommand ButtonSudokuGame { get; private set; }
 
         private void ExecuteButtonSudokuGame(object parameter)
         {
             MainWindowVM mainWindowVM = MainWindowVM.Instance;
             mainWindowVM.CurrentPage = new SodukuMainPage();
         }
+
+        public ICommand ButtonProfil { get; private set; }
+
+        private void ExecuteButtonProfil(object parameter)
+        {
+            ProfilWindow profilWindow = new ProfilWindow();
+            profilWindow.Show();
+        }
+
+        public ICommand ButtonNotif { get; private set; }
+
+        private void ExecuteNotif(object parameter)
+        {
+            
+        }
+
+        public ICommand ButtonLogOut { get; private set; }
+
+        private void ExecuteLogOut(object parameter)
+        {
+            
+        }
+
+
+
+
+
     }
 }

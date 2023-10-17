@@ -4,11 +4,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GameOn.Views.Pages"
+      xmlns:ViewModels="clr-namespace:GameOn.ViewModels"
+      d:DataContext="{d:DesignInstance Type=ViewModels:SudokuRankedPageVM}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SudokuRankedPage">
 
     <Grid>
-        
+        <Image Source="/img/Jeu.png" Stretch="UniformToFill"  ></Image>
     </Grid>
 </Page>

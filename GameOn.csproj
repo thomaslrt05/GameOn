@@ -8,11 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Img\Accueil.png" />
+    <None Remove="Img\Classement.png" />
+    <None Remove="Img\Classé.png" />
     <None Remove="Img\ConnectButton.png" />
     <None Remove="Img\ConnectButton.svg" />
+    <None Remove="Img\Entrainement.png" />
+    <None Remove="Img\Jeu.png" />
     <None Remove="img\Landing page.png" />
     <None Remove="Img\LandingPage.png" />
     <None Remove="Img\LoginPage.png" />
+    <None Remove="Img\sudoku.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,9 +27,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Img\Accueil.png" />
+    <Resource Include="Img\Classement.png" />
+    <Resource Include="Img\Classé.png" />
     <Resource Include="Img\ConnectButton.png" />
+    <Resource Include="Img\Entrainement.png" />
+    <Resource Include="Img\Jeu.png" />
     <Resource Include="Img\LandingPage.png" />
     <Resource Include="Img\LoginPage.png" />
+    <Resource Include="Img\sudoku.png" />
   </ItemGroup>
 
 </Project>

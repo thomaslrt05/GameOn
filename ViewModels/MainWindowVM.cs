@@ -40,12 +40,10 @@ namespace GameOn.ViewModels
         {
             get
             {
-                // Retourne la valeur de l'attribut privé
                 return _currentPage;
             }
             set
             {
-                // Modifie la valeur de l'attribut privé et notifie la view
                 _currentPage = value;
                 OnPropertyChanged(nameof(CurrentPage));
             }
@@ -77,20 +75,6 @@ namespace GameOn.ViewModels
             get { return _changePageCommand; } 
             set { _changePageCommand = value; } 
         }
-
-
-        private void OnConnexion(object parameter) 
-        {
-            CurrentPage = new LandingPage();
-        }
-
-        private bool CanConnexion(object parameter)
-        {
-            return true;
-        }
-
-
-
-  
+ 
     }
 }

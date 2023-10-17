@@ -10,21 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GameOn.ViewModels;
 
-namespace GameOn.Views.Pages
+namespace GameOn.Views.Windows
 {
     /// <summary>
-    /// Logique d'interaction pour SudokuScoreboardPage.xaml
+    /// Logique d'interaction pour LogOutWindow.xaml
     /// </summary>
-    public partial class SudokuScoreboardPage : Page
+    public partial class LogOutWindow : Window
     {
-        public SudokuScoreboardPage()
+        public LogOutWindow()
         {
             InitializeComponent();
-            //this.DataContext = new SudokuPracticePageVM();
         }
     }
 }

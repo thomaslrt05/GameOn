@@ -11,12 +11,26 @@
       Title="SodukuMainPage">
 
     <Grid>
-        <Image Source="/img/Accueil.png" Stretch="UniformToFill"></Image>
-        <Grid Margin="200,200,200,50">
+        <Image Source="/img/Accueil.png" Stretch="Uniform"></Image>
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <Grid.RowDefinitions>
+                <RowDefinition ></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition></RowDefinition>
+
+                
+            </Grid.RowDefinitions>
+            
+            
+            
+            <StackPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button Width="250" Command="{Binding ButtonRankedGameCommand}">
                     <Image Source="/img/Classé.png"/>
                 </Button>

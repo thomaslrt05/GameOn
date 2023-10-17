@@ -5,8 +5,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GameOn.Models;
+using GameOn.DataAccesLayer;
 
 namespace GameOn.ViewModels
 {
@@ -28,7 +31,37 @@ namespace GameOn.ViewModels
         }
         #endregion
 
-        private String txtPassword = string.Empty;
+        private String _txtPassword;
+
+        public String TxtPassword
+        {
+            get
+            {
+                return _txtPassword;
+            }
+            set
+            {
+                _txtPassword = value;
+                OnPropertyChanged(nameof(TxtPassword));
+            }
+        }
+
+        private String _txtEmail;
+
+        public String TxtEmail
+        {
+            get
+            {
+                return _txtEmail;
+            }
+            set
+            {
+                _txtEmail = value;
+                OnPropertyChanged(nameof(TxtEmail));
+            }
+        }
+
+
 
         public static MainWindowVM Instance = MainWindowVM.Instance;
 
@@ -50,19 +83,18 @@ namespace GameOn.ViewModels
 
         private void OnConnexion(object parameter)
         {
-            /*
-            string pwd = TxtPassword;
-            string mail = Email;
-            string hash = User.Hash(pwd);
-            User user = new DAL().UserFact.GetByMail(mail);
+            User user = new DAL().UserFact.GetByMail(_txtEmail);
             if (user != null)
             {
-                MessageBox.Show(user.Password == hash ? "logged in" : "error");
+                if(user.Password == _txtPassword)
+                {
+                    MainWindowVM mainWindowVM = MainWindowVM.Instance;
+                    mainWindowVM.CurrentPage = new LandingPage();
+                }
+                else MessageBox.Show("Le mot de passe est eronné");
             }
-            MessageBox.Show("error");
-            */
-            MainWindowVM mainWindowVM = MainWindowVM.Instance;
-            mainWindowVM.CurrentPage = new LandingPage();
+            else MessageBox.Show("Le login donné n'existe pas");
+           
         }
 
         private bool CanConnexion(object parameter)
