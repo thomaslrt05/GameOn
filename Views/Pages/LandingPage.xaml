@@ -35,7 +35,7 @@
 
         
 
-        <Grid Margin="58,110,60,90">
+        <Grid Height="300" Margin="10" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="60"></ColumnDefinition>
@@ -52,7 +52,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel Background="AliceBlue" HorizontalAlignment="Center" Margin="10" Width="200" VerticalAlignment="Center">
-                <Button Height="90" Width="90" Command="{Binding ButtonSudokuGame}">
+                <Button Height="90" Width="100" Command="{Binding ButtonSudokuGame}">
                     <Image Source="/img/sudoku.png"/>
                 </Button>
             </StackPanel>
