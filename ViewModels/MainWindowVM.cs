@@ -34,6 +34,8 @@ namespace GameOn.ViewModels
 
         public static MainWindowVM Instance = new MainWindowVM();
 
+
+
         private Page _currentPage;
 
         public Page CurrentPage
@@ -51,7 +53,7 @@ namespace GameOn.ViewModels
 
         protected MainWindowVM() 
         {
-
+            DAL.ConnectionString = "Server=sql.decinfo-cchic.ca;Port=33306;Database=a23_e80_hourglass_gameon;Uid=dev-2334653;Pwd=Sayer123";
             CurrentPage = new LoginPage();
         }
 
