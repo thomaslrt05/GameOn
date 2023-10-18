@@ -86,7 +86,8 @@ namespace GameOn.ViewModels
             User user = new DAL().UserFact.GetByMail(_txtEmail);
             if (user != null)
             {
-                if(user.Password == _txtPassword)
+                string mdp = User.Hash(_txtPassword.ToString());
+                if (user.Password == User.Hash(_txtPassword))
                 {
                     MainWindowVM mainWindowVM = MainWindowVM.Instance;
                     mainWindowVM.CurrentPage = new LandingPage();
