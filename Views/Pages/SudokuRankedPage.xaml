@@ -14,7 +14,7 @@
     <Grid>
         <Image Source="/img/Jeu.png" Stretch="UniformToFill"  ></Image>
         
-        <Grid Height="350" Width="400" HorizontalAlignment="Left" Margin="20">
+        <Grid Height="350" Width="400" HorizontalAlignment="Left" Margin="50">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
@@ -40,10 +40,24 @@
             </Grid.RowDefinitions>
         </Grid>
         
-        <Grid>
+        <Grid Margin="50" Width="200" Height="350" HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
+            <StackPanel>
+                
+            </StackPanel>
+            <TextBlock Margin="10" Grid.Row="1" TextWrapping="Wrap" FontSize="12" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center">
+                Bienvenue sur le sudoku de GameOn !
+                <LineBreak />
+                Voici les règles !
+                <LineBreak />
+                Clique gauche pour mettre une note !
+                <LineBreak />
+                Clique droit pour mettre votre vrai chiffre !
+                <LineBreak />
+                Puis validé !
+            </TextBlock>
         </Grid>
     </Grid>
 </Page>
