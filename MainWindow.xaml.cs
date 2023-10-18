@@ -17,21 +17,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace GameOn
-{
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+{ 
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
-            // Crée la connexion a la BD
-            /* Serveur KC
-            DAL.ConnectionString = "Server=sql.decinfo-cchic.ca;Port=33306;Database=a23_e80_hourglass_gameon;Uid=dev-2334653;Pwd=Sayer123";
-            */
-
-            // Utiliser les VM en implementant INotifyPropertyChanged  
             this.DataContext = MainWindowVM.Instance;
         }
 
