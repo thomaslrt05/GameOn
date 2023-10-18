@@ -51,6 +51,8 @@ namespace GameOn.ViewModels
             }
         }
 
+
+
         protected MainWindowVM() 
         {
             DAL.ConnectionString = "Server=sql.decinfo-cchic.ca;Port=33306;Database=a23_e80_hourglass_gameon;Uid=dev-2334653;Pwd=Sayer123";
