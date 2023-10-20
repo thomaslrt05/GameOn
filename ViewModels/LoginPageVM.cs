@@ -30,9 +30,11 @@ namespace GameOn.ViewModels
             }
         }
         #endregion
-        public static MainWindowVM Instance = MainWindowVM.Instance;
+
 
         #region Propriété
+
+        public static MainWindowVM Instance = MainWindowVM.Instance;
         private String _txtPassword;
 
         public String TxtPassword
@@ -91,21 +93,18 @@ namespace GameOn.ViewModels
 
         private void OnConnexion(object parameter)
         {
-            /*
+            
             User user = new DAL().UserFact.GetByMail(_txtEmail);
             if (user != null)
             {
                 if (user.Password == User.Hash(_txtPassword))
                 {
                     MainWindowVM mainWindowVM = MainWindowVM.Instance;
-                    mainWindowVM.CurrentPage = new LandingPage();
+                    Instance.CurrentPage = new LandingPage();
                 }
                 else MessageBox.Show("Le mot de passe est eronné");
             }
             else MessageBox.Show("Le login donné n'existe pas");
-           */
-            MainWindowVM mainWindowVM = MainWindowVM.Instance;
-            mainWindowVM.CurrentPage = new LandingPage();
         }
 
         private bool CanConnexion(object parameter)
