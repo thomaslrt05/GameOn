@@ -11,7 +11,7 @@
       Title="SodukuMainPage">
 
     <Grid>
-        <Image Source="/img/Accueil.png" Stretch="Uniform"></Image>
+        <Image Source="/img/Accueil.png" Stretch="UniformToFill"></Image>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
