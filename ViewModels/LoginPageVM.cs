@@ -83,10 +83,10 @@ namespace GameOn.ViewModels
 
         private void OnConnexion(object parameter)
         {
+            /*
             User user = new DAL().UserFact.GetByMail(_txtEmail);
             if (user != null)
             {
-                string mdp = User.Hash(_txtPassword.ToString());
                 if (user.Password == User.Hash(_txtPassword))
                 {
                     MainWindowVM mainWindowVM = MainWindowVM.Instance;
@@ -95,7 +95,9 @@ namespace GameOn.ViewModels
                 else MessageBox.Show("Le mot de passe est eronné");
             }
             else MessageBox.Show("Le login donné n'existe pas");
-           
+           */
+            MainWindowVM mainWindowVM = MainWindowVM.Instance;
+            mainWindowVM.CurrentPage = new LandingPage();
         }
 
         private bool CanConnexion(object parameter)

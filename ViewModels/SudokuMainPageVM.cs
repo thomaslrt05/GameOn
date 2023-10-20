@@ -1,6 +1,8 @@
 ﻿using GameOn.Views.Pages;
 using System;
 using System.ComponentModel;
+using System.Windows.Controls;
+using System.Windows;
 using System.Windows.Input;
 
 namespace GameOn.ViewModels
@@ -24,6 +26,7 @@ namespace GameOn.ViewModels
             this.ButtonPracticeGameCommand = new RelayCommand(ExecuteButtonPracticeGame, CanExecuteButton);
             this.ButtonRankedGameCommand = new RelayCommand(ExecuteButtonRankedGame, CanExecuteButton);
             this.ButtonScoreboardCommand = new RelayCommand(ExecuteButtonScoreboard, CanExecuteButton);
+            
         }
 
        
@@ -58,6 +61,8 @@ namespace GameOn.ViewModels
             mainWindowVM.CurrentPage = new SudokuScoreboardPage();
         }
 
-      
+        
+
+
     }
 }
