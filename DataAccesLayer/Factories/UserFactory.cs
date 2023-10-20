@@ -12,7 +12,7 @@ namespace GameOn.DataAccesLayer.Factories
             string lastName = mySqlDataReader["LastName"].ToString() ?? string.Empty;
             string mail = mySqlDataReader["Mail"].ToString() ?? string.Empty;
             string password = mySqlDataReader["Password"].ToString() ?? string.Empty;
-            int departementId = (int)mySqlDataReader["Id"];
+            int departementId = (int)mySqlDataReader["departement"];
             DAL dal = new DAL();
             Departement? departement = dal.DepartementFact.Get(departementId);
             return new User(id, name, lastName, mail, password, departement);

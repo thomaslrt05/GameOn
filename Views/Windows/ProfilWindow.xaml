@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameOn.Views.Windows"
+        xmlns:ViewModels="clr-namespace:GameOn.ViewModels"
+        d:DataContext="{d:DesignInstance Type=ViewModels:LoginPageVM}"
         mc:Ignorable="d"
         Title="ProfilWindow" Height="250" Width="250">
     <Grid>
@@ -18,19 +20,27 @@
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="0" Grid.Row="0" Content="Pseudo" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
-        <TextBox Grid.Column="1" Grid.Row="0" Name="pseudoField" Height="30"></TextBox>
+        <Label Grid.Column="0" Grid.Row="0" Content="Nom" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBlock Text="{Binding UserConnected.LastName}" Grid.Column="1" Grid.Row="0" Height="30"></TextBlock>
 
-        <Label Grid.Column="0" Grid.Row="1" Content="Mot de passe" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
-        <TextBox Grid.Column="1" Grid.Row="1" Name="passwordField" Height="30"></TextBox>
+        <Label Grid.Column="0" Grid.Row="1" Content="Prénom" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBlock Text="{Binding UserConnected.Name}" Grid.Column="1" Grid.Row="1" Height="30"></TextBlock>
 
-        <Label Grid.Column="0" Grid.Row="2" Content="Département" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
-        <ComboBox  Grid.Column="1" Grid.Row="2" Name="comboBoxDepartement" DisplayMemberPath="." Height="30" />
+        <Label Grid.Column="0" Grid.Row="2" Content="Adresse mail" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBlock Text="{Binding UserConnected.Mail}" Grid.Column="1" Grid.Row="2" Height="30" ></TextBlock>
 
-        <Button Content="Retour" Grid.Column="0" Grid.Row="3" Height="50" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
-        <Button Content="Modifier" Grid.Column="1" Grid.Row="3" Height="50" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
+        <Label Grid.Column="0" Grid.Row="3" Content="Département" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBlock Text="{Binding UserConnected.Departement.Name}" Grid.Column="1" Grid.Row="3" Height="30"></TextBlock>
+
+        <Label Grid.Column="0" Grid.Row="4" Content="Password" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBox Grid.Column="1" Grid.Row="4" Height="30"></TextBox>
+
+        <Label Grid.Column="0" Grid.Row="5" Content="Enregistrer" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <Button Content="Valider" Grid.Column="1" Grid.Row="5" Height="30" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
         
     </Grid>
 </Window>

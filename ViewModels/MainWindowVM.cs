@@ -59,18 +59,7 @@ namespace GameOn.ViewModels
             CurrentPage = new LoginPage();
         }
 
-        private void ChangePage(string pageName)
-        {
-            switch(pageName) 
-            {
-                case "LoginPage":
-                    CurrentPage = new LoginPage();
-                    break;
-                case "LandingPage":
-                    CurrentPage = new LandingPage();
-                    break;
-            }
-        }
+
 
         private ICommand _changePageCommand;
 
