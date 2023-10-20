@@ -1,4 +1,4 @@
-﻿using GameOn.DataAccesLayer;
+using GameOn.DataAccesLayer;
 using GameOn.Models;
 using System;
 using System.Collections.Generic;

@@ -35,7 +35,7 @@ namespace GameOn.Views.Pages
         {
             try
             {
-                Sudoku sudoku = await InitSudoku();
+                SudokuLogic sudoku = await InitSudoku();
 
                 for (int i = 0; i < 9; i++)
                 {
@@ -53,10 +53,10 @@ namespace GameOn.Views.Pages
             }
         }
 
-        public async Task<Sudoku> InitSudoku()
+        public async Task<SudokuLogic> InitSudoku()
         {
             string sudoku = await GetSudoku();
-            return Sudoku.JsonToGame(sudoku);
+            return SudokuLogic.JsonToGame(sudoku);
         }
 
         static async Task<string> GetSudoku()

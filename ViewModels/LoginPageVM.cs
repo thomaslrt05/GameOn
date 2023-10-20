@@ -100,7 +100,9 @@ namespace GameOn.ViewModels
                 if (user.Password == User.Hash(_txtPassword))
                 {
 
+
                     ConnectionSingleton.UserConnected = user;
+
                     MainWindowVM mainWindowVM = MainWindowVM.Instance;
                     Instance.CurrentPage = new LandingPage();
                 }

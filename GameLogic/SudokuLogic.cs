@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace GameOn.Models.Game
 {
-    public class Sudoku
+    public class SudokuLogic
     {
         public const int GRIDSIZE = 9;
         public int[,] Grid { get; private set; }
         public int[,] SolutionGrid { get; private set; }
-        public Sudoku(int[,] grid, int[,] solutionGrid)
+        public SudokuLogic(int[,] grid, int[,] solutionGrid)
         {
             Grid = grid;
             SolutionGrid = solutionGrid;
@@ -41,7 +41,7 @@ namespace GameOn.Models.Game
             }
             Console.WriteLine(stringBuilder.ToString());
         }
-        public static Sudoku JsonToGame(string json)
+        public static SudokuLogic JsonToGame(string json)
         {
             JObject jsonObject = JObject.Parse(json);
             JArray grid = (JArray)jsonObject["newboard"]["grids"][0]["value"];
@@ -70,7 +70,7 @@ namespace GameOn.Models.Game
                 iRow++;
             }
 
-            return new Sudoku(gridInt, gridSolutionInt);
+            return new SudokuLogic(gridInt, gridSolutionInt);
 
 
         }
