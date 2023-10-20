@@ -185,13 +185,10 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
-        
+
         <DataTemplate x:Key="CellDataTemplate">
-            
             <Grid x:Name="CellGrid"
               Margin="0">
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -287,11 +284,13 @@
         </DataTemplate>
 
     </Page.Resources>
-    
-    <Canvas>
 
-        <Image Source="/img/Jeu.png" Stretch="UniformToFill" Height="450" Width="800"></Image>
-        <Grid Style="{StaticResource GameGridStyle}" Margin="20">
+    <Canvas Margin="0,0,0,0"            
+        Height="490"
+        Width="580">
+
+
+        <Grid Style="{StaticResource GameGridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>

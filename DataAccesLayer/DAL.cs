@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GameOn.DataAccesLayer.Factories;
+using GameOn.Models;
+
 namespace GameOn.DataAccesLayer
 {
     public class DAL
@@ -12,6 +14,7 @@ namespace GameOn.DataAccesLayer
         public static string? ConnectionString { get; set; }
         private UserFactory? _userFact = null;
         private DepartementFactory? _departementFact = null;
+        public User? userConnected { get; set; } 
 
         public DepartementFactory DepartementFact
         {
@@ -37,6 +40,26 @@ namespace GameOn.DataAccesLayer
                 return _userFact;
             }
         }
+
+        public User UserConnected
+        {
+            get
+            {
+                if (_userFact == null)
+                {
+                    throw new Exception("user non connecté");
+                }
+
+                return userConnected;
+            }
+            set
+            {
+                userConnected = value;
+            }
+        }
+
+
+
 
     }
 }
