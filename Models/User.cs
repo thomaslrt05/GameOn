@@ -15,7 +15,7 @@ namespace GameOn.Models
         public string Mail { get; set; }
         public string Password { get; set; }
         public Departement Departement { get; set; }
-        public List<GameParticipation>? Participations { get; set; }
+        public List<SudokuParticipation>? Participations { get; set; }
         public List<Notification>? Notifications { get; set; }
         public User() { }
 

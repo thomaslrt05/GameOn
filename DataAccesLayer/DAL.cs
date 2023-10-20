@@ -41,22 +41,6 @@ namespace GameOn.DataAccesLayer
             }
         }
 
-        public User UserConnected
-        {
-            get
-            {
-                if (_userFact == null)
-                {
-                    throw new Exception("user non connecté");
-                }
-
-                return userConnected;
-            }
-            set
-            {
-                userConnected = value;
-            }
-        }
 
 
 

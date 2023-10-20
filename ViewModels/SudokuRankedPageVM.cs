@@ -14,7 +14,7 @@ namespace GameOn.ViewModels
 {
     class SudokuRankedPageVM : INotifyPropertyChanged
     {
-        Sudoku sudoku { get; set; }
+        SudokuLogic sudoku { get; set; }
         public List<List<SudokuCell>> SudokuGrid { get; set; }
 
 

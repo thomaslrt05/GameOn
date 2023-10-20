@@ -12,15 +12,17 @@ namespace GameOn.ViewModels
 {
     internal class ProfilWindowVM
     {
-
-        public ProfilWindowVM()
-        {
-           LoadDepartement();
-        }
+            public ProfilWindowVM()
+            {
+                LoadDepartement();
+                User userConntected = new DAL().userConnected;
+                Console.WriteLine(userConntected);
+            }
 
 
         private void LoadDepartement()
         {
+
             List<string> list = new List<string>();
             DAL dAL = new DAL();
             List<Departement> departs = new List<Departement>();
