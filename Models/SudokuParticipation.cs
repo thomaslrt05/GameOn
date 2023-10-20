@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameOn.Models
 {
-    public class GameParticipation
+    public class SudokuParticipation
     {
     }
 }
