@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GameOn.Models.Game;
+using GameOn.Models;
 using GameOn.ViewModels;
 
 
@@ -29,6 +30,7 @@ namespace GameOn.Views.Pages
             InitializeComponent();
             this.DataContext = new SudokuRankedPageVM();
             LoadSudokuAsync();
+            Sudoku.CreateSudoku();
         }
 
         private async void LoadSudokuAsync()

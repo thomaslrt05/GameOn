@@ -15,7 +15,8 @@ namespace GameOn.DataAccesLayer
         public static string? ConnectionString { get; set; }
         private UserFactory? _userFact = null;
         private DepartementFactory? _departementFact = null;
-        public User? userConnected = null;
+        private SudokuFactory? _sudokuFact = null;
+
 
         public DepartementFactory DepartementFact
         {
@@ -40,6 +41,20 @@ namespace GameOn.DataAccesLayer
 
                 return _userFact;
             }
+        }
+
+        public SudokuFactory SudokuFactory 
+        {
+            get
+            {
+                if (_sudokuFact == null)
+                {
+                    _sudokuFact = new SudokuFactory();
+                }
+
+                return _sudokuFact;
+            }
+                
         }
 
 

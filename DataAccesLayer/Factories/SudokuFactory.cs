@@ -33,12 +33,12 @@ namespace GameOn.DataAccesLayer.Factories
                 if (sudoku.Id == 0)
                 {
 
-                    mySqlCmd.CommandText = "INSERT INTO user(creationDate, grid, solutionGrid, isRanked, difficulty) " +
+                    mySqlCmd.CommandText = "INSERT INTO sudoku(creationDate, grid, solutionGrid, isRanked, difficulty) " +
                                            "VALUES (@creationDate, @grid, @solutionGrid, @isRanked, @difficulty)";
                 }
                 else
                 {
-                    mySqlCmd.CommandText = "UPDATE user " +
+                    mySqlCmd.CommandText = "UPDATE sudoku " +
                                            "SET creationDate=@creationDate, grid=@grid, solutionGrid=@solutionGrid, isRanked=@isRanked, difficulty=@difficulty" +
                                            "WHERE Id=@id";
 
