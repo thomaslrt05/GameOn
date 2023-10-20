@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using GameOn.ViewModels;
 
 namespace GameOn.Views.Windows
 {
@@ -22,6 +23,7 @@ namespace GameOn.Views.Windows
         public ProfilWindow()
         {
             InitializeComponent();
+            this.DataContext = new ProfilWindowVM();
         }
     }
 }

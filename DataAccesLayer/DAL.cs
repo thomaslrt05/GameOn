@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using GameOn.DataAccesLayer.Factories;
 using GameOn.Models;
 
@@ -14,7 +15,7 @@ namespace GameOn.DataAccesLayer
         public static string? ConnectionString { get; set; }
         private UserFactory? _userFact = null;
         private DepartementFactory? _departementFact = null;
-        public User? userConnected { get; set; } 
+        public User? userConnected = null;
 
         public DepartementFactory DepartementFact
         {
@@ -40,6 +41,7 @@ namespace GameOn.DataAccesLayer
                 return _userFact;
             }
         }
+
 
 
 
