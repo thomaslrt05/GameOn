@@ -49,5 +49,36 @@ namespace GameOn.DataAccesLayer.Factories
             return departement;
 
         }
+
+        public List<Departement>? GetAll()
+        {
+            List<Departement>? departements = null;
+            MySqlConnection? mySqlCnn = null;
+            MySqlDataReader? mySqlDataReader = null;
+
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT * FROM departement";
+
+                mySqlDataReader = mySqlCmd.ExecuteReader();
+                while (mySqlDataReader.Read())
+                {
+                    Departement departement = CreateFromReader(mySqlDataReader);
+                    departements.Add(departement);
+                }
+            }
+            finally
+            {
+                mySqlDataReader?.Close();
+                mySqlCnn?.Close();
+            }
+
+            return departements;
+
+        }
     }
 }

@@ -7,12 +7,14 @@
         mc:Ignorable="d"
         Title="ProfilWindow" Height="250" Width="250">
     <Grid>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -24,8 +26,11 @@
         <Label Grid.Column="0" Grid.Row="1" Content="Mot de passe" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
         <TextBox Grid.Column="1" Grid.Row="1" Name="passwordField" Height="30"></TextBox>
 
-        <Button Content="Retour" Grid.Column="0" Grid.Row="2" Height="50" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
-        <Button Content="Modifier" Grid.Column="1" Grid.Row="2" Height="50" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
+        <Label Grid.Column="0" Grid.Row="2" Content="Département" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <ComboBox  Grid.Column="1" Grid.Row="2" Name="comboBoxDepartement" DisplayMemberPath="." Height="30" />
+
+        <Button Content="Retour" Grid.Column="0" Grid.Row="3" Height="50" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
+        <Button Content="Modifier" Grid.Column="1" Grid.Row="3" Height="50" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Button>
         
     </Grid>
 </Window>

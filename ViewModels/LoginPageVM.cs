@@ -30,7 +30,9 @@ namespace GameOn.ViewModels
             }
         }
         #endregion
+        public static MainWindowVM Instance = MainWindowVM.Instance;
 
+        #region Propriété
         private String _txtPassword;
 
         public String TxtPassword
@@ -61,14 +63,20 @@ namespace GameOn.ViewModels
             }
         }
 
+       
+
+       
+        #endregion
+
+        
 
 
-        public static MainWindowVM Instance = MainWindowVM.Instance;
 
 
         public LoginPageVM()
         {
             this.ChangePageCommand = new RelayCommand(OnConnexion, CanConnexion);
+            
         }
 
 
@@ -105,7 +113,7 @@ namespace GameOn.ViewModels
             return true;
         }
 
-
+        
 
     }
 }
