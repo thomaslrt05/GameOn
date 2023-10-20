@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using GameOn.DataAccesLayer.Factories;
 using GameOn.Models;
 
@@ -15,7 +16,7 @@ namespace GameOn.DataAccesLayer
         private UserFactory? _userFact = null;
         private DepartementFactory? _departementFact = null;
         private SudokuFactory? _sudokuFact = null;
-        public User? userConnected { get; set; } 
+
 
         public DepartementFactory DepartementFact
         {
@@ -55,6 +56,7 @@ namespace GameOn.DataAccesLayer
             }
                 
         }
+
 
 
 
