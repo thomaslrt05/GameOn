@@ -1,0 +1,121 @@
+﻿
+using GameOn.Models;
+using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GameOn.DataAccesLayer.Factories
+{
+    public class SudokuParticipationFactory
+    {
+        public static SudokuParticipation createEmpty()
+        {
+            return new SudokuParticipation
+            {
+                Id = 0, // Valeurs par défaut ou appropriées pour les autres propriétés
+                EndDate = null,
+                StartDate = DateTime.Now, // Vous pouvez modifier la valeur par défaut si nécessaire
+                PointWon = 0,
+                SudokuId = 0,
+                UserId = 0,
+                ActualGrid = string.Empty
+            };
+        }
+
+        public static SudokuParticipation CreateFromReader(IDataReader reader)
+        {
+            SudokuParticipation participation = new SudokuParticipation();
+
+            participation.Id = Convert.ToInt32(reader["Id"]);
+            participation.StartDate = Convert.ToDateTime(reader["StartDate"]);
+            participation.EndDate = reader["EndDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["EndDate"]);
+            participation.PointWon = Convert.ToInt32(reader["PointWon"]);
+            participation.SudokuId = Convert.ToInt32(reader["Sudoku"]);
+            participation.UserId = Convert.ToInt32(reader["User_Id"]);
+            participation.ActualGrid = reader["ActualGrid"].ToString();
+
+            return participation;
+        }
+
+
+        public SudokuParticipation? GetTodayParticipationOfUser(int userId)
+        {
+            DateTime date = DateTime.Today;
+            MySqlConnection? mySqlCnn = null;
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT * FROM sudokuparticipation " +
+                                       "WHERE User_Id = @UserId AND DATE(StartDate) = @Date";
+                mySqlCmd.Parameters.AddWithValue("@UserId", userId);
+                mySqlCmd.Parameters.AddWithValue("@Date", date.Date);
+
+                using (MySqlDataReader reader = mySqlCmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return CreateFromReader(reader);
+                    }
+                }
+            }
+            finally
+            {
+                mySqlCnn?.Close();
+            }
+
+            // Si aucune participation n'est trouvée, retournez null ou une valeur par défaut.
+            return null;
+        }
+
+
+        public void Save(SudokuParticipation participation)
+        {
+            MySqlConnection? mySqlCnn = null;
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                if (participation.Id == 0)
+                {
+                    mySqlCmd.CommandText = "INSERT INTO sudokuparticipation(EndDate, StartDate, PointWon, Sudoku, User_Id, ActualGrid) " +
+                                           "VALUES (@EndDate, @StartDate, @PointWon, @SudokuId, @UserId, @ActualGrid)";
+                }
+                else
+                {
+                    mySqlCmd.CommandText = "UPDATE sudokuparticipation " +
+                                           "SET EndDate=@EndDate, StartDate=@StartDate, PointWon=@PointWon, SudokuId=@Sudoku, User_Id=@UserId, ActualGrid=@ActualGrid " +
+                                           "WHERE Id=@Id";
+
+                    mySqlCmd.Parameters.AddWithValue("@Id", participation.Id);
+                }
+                mySqlCmd.Parameters.AddWithValue("@EndDate", participation.EndDate);
+                mySqlCmd.Parameters.AddWithValue("@StartDate", participation.StartDate);
+                mySqlCmd.Parameters.AddWithValue("@PointWon", participation.PointWon);
+                mySqlCmd.Parameters.AddWithValue("@SudokuId", participation.SudokuId);
+                mySqlCmd.Parameters.AddWithValue("@UserId", participation.UserId);
+                mySqlCmd.Parameters.AddWithValue("@ActualGrid", participation.ActualGrid);
+
+                mySqlCmd.ExecuteNonQuery();
+
+                if (participation.Id == 0)
+                {
+                    participation.Id = (int)mySqlCmd.LastInsertedId;
+                }
+            }
+            finally
+            {
+                mySqlCnn?.Close();
+            }
+        }
+    }
+}
+
