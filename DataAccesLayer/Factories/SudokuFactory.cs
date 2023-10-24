@@ -63,7 +63,7 @@ namespace GameOn.DataAccesLayer.Factories
                 mySqlCnn?.Close();
             }
         }
-        public Sudoku GetGameOfTheDay()
+        public Sudoku? GetGameOfTheDay()
         {
             MySqlConnection? mySqlCnn = null;
             try
@@ -73,7 +73,7 @@ namespace GameOn.DataAccesLayer.Factories
 
                 MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
                 DateTime today = DateTime.Today;
-                string query = "SELECT * FROM game WHERE DATE(CreationDate) = @today";
+                string query = "SELECT * FROM sudoku WHERE DATE(CreationDate) = @today";
                 mySqlCmd.CommandText = query;
                 mySqlCmd.Parameters.AddWithValue("@today", today);
 
@@ -86,6 +86,34 @@ namespace GameOn.DataAccesLayer.Factories
                 }
 
                 return null; 
+            }
+            finally
+            {
+                mySqlCnn?.Close();
+            }
+        }
+        public Sudoku? Get(int id)
+        {
+            MySqlConnection? mySqlCnn = null;
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                string query = "SELECT * FROM sudoku WHERE id = @id";
+                mySqlCmd.CommandText = query;
+                mySqlCmd.Parameters.AddWithValue("@id", id);
+
+                using (MySqlDataReader reader = mySqlCmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return CreateFromReader(reader);
+                    }
+                }
+
+                return null;
             }
             finally
             {

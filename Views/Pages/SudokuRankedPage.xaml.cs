@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using GameOn.Models.Game;
 using GameOn.Models;
 using GameOn.ViewModels;
-
+using GameOn.DataAccesLayer;
 
 namespace GameOn.Views.Pages
 {
@@ -30,24 +30,54 @@ namespace GameOn.Views.Pages
             InitializeComponent();
             this.DataContext = new SudokuRankedPageVM();
             LoadSudokuAsync();
-            Sudoku.CreateSudoku();
         }
 
         private async void LoadSudokuAsync()
         {
             try
             {
-                SudokuLogic sudoku = await InitSudoku();
+                DAL dal = new DAL();
 
+                //obtenir la participation au sudoku du jour
+                SudokuParticipation? sudokuParticipation = dal.SudokuParticipationFact.GetTodayParticipationOfUser(ConnectionSingleton.UserConnected.Id);
+                if(sudokuParticipation == null)
+                {
+                    //si il n'y a pas de participation, obtenir le sudoku du jour
+                    Sudoku? sudokuModel = dal.SudokuFactory.GetGameOfTheDay();
+
+                    // si le sudoku du jour n'existe pas le crée
+                    if (sudokuModel == null)
+                    {
+                        sudokuModel = await Sudoku.CreateSudoku();
+                        dal.SudokuFactory.Save(sudokuModel);
+                    }
+                    //creé le sudokuParaticipation pour ce sudoku
+                    sudokuParticipation = new SudokuParticipation()
+                    {
+                        StartDate = DateTime.Now,
+                        Id = 0,
+                        SudokuId = sudokuModel.Id,
+                        PointWon = 0,
+                        UserId = ConnectionSingleton.UserConnected.Id,
+                        ActualGrid = sudokuModel.Grid
+                    };
+                    dal.SudokuParticipationFact.Save(sudokuParticipation);
+                }
+
+                //transformer la participation en gameLogic
+                SudokuLogic sudokuLogic = SudokuLogic.SudokuParticipationToLogic(sudokuParticipation);
+
+                //ouvrire la fenetre avec les données du gameParticipation
                 for (int i = 0; i < 9; i++)
                 {
                     for (int j = 0; j < 9; j++)
                     {
                         TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
 
-                        textBox.Text = int.Parse(sudoku.Grid[i, j].ToString()) != 0 ? sudoku.Grid[i, j].ToString() : "";
+                        textBox.Text = int.Parse(sudokuLogic.Grid[i, j].ToString()) != 0 ? sudokuLogic.Grid[i, j].ToString() : "";
                     }
                 }
+                
             }
             catch (Exception ex)
             {
@@ -55,20 +85,6 @@ namespace GameOn.Views.Pages
             }
         }
 
-        public async Task<SudokuLogic> InitSudoku()
-        {
-            string sudoku = await GetSudoku();
-            return SudokuLogic.JsonToGame(sudoku);
-        }
-
-        static async Task<string> GetSudoku()
-        {
-            string url = "https://sudoku-api.vercel.app/api/dosuku";
-
-            HttpClient client = new HttpClient();
-            string content = await client.GetStringAsync(url);
-
-            return content;
-        }
+       
     }
 }

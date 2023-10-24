@@ -16,6 +16,7 @@ namespace GameOn.DataAccesLayer
         private UserFactory? _userFact = null;
         private DepartementFactory? _departementFact = null;
         private SudokuFactory? _sudokuFact = null;
+        private SudokuParticipationFactory? _sudokuParticipationFact = null;
 
 
         public DepartementFactory DepartementFact
@@ -53,6 +54,19 @@ namespace GameOn.DataAccesLayer
                 }
 
                 return _sudokuFact;
+            }
+                
+        }
+        public SudokuParticipationFactory SudokuParticipationFact
+        {
+            get
+            {
+                if (_sudokuParticipationFact == null)
+                {
+                    _sudokuParticipationFact = new SudokuParticipationFactory();
+                }
+
+                return _sudokuParticipationFact;
             }
                 
         }

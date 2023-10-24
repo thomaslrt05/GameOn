@@ -55,7 +55,9 @@ namespace GameOn.ViewModels
 
         protected MainWindowVM() 
         {
-            DAL.ConnectionString = "Server=sql.decinfo-cchic.ca;Port=33306;Database=a23_e80_hourglass_gameon;Uid=dev-2334653;Pwd=Sayer123";
+            //DAL.ConnectionString = "Server=sql.decinfo-cchic.ca;Port=33306;Database=a23_e80_hourglass_gameon;Uid=dev-2334653;Pwd=Sayer123";
+            DAL.ConnectionString = "Server=localhost;Port=3306;Database=gameon;Uid=root;Pwd=yikes";
+
             CurrentPage = new LoginPage();
         }
 
