@@ -92,7 +92,7 @@ namespace GameOn.DataAccesLayer.Factories
                 else
                 {
                     mySqlCmd.CommandText = "UPDATE sudokuparticipation " +
-                                           "SET EndDate=@EndDate, StartDate=@StartDate, PointWon=@PointWon, SudokuId=@Sudoku, User_Id=@UserId, ActualGrid=@ActualGrid " +
+                                           "SET EndDate=@EndDate, StartDate=@StartDate, PointWon=@PointWon, Sudoku=@SudokuId, User_Id=@UserId, ActualGrid=@ActualGrid " +
                                            "WHERE Id=@Id";
 
                     mySqlCmd.Parameters.AddWithValue("@Id", participation.Id);

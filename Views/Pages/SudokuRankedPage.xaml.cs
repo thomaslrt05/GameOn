@@ -19,6 +19,7 @@ using GameOn.ViewModels;
 using GameOn.DataAccesLayer;
 using System.Threading.Channels;
 using System.Windows.Threading;
+using Newtonsoft.Json;
 
 namespace GameOn.Views.Pages
 {
@@ -32,6 +33,7 @@ namespace GameOn.Views.Pages
         public SudokuLogic _SudokuLogic { get; set; }
         private DispatcherTimer gameTimer;
         private TimeSpan gameTimeRemaining;
+
 
         public SudokuRankedPage()
         {
@@ -55,8 +57,8 @@ namespace GameOn.Views.Pages
         {
             gameTimeRemaining = gameTimeRemaining.Subtract(TimeSpan.FromSeconds(1));
             Timer.Content = gameTimeRemaining.ToString(@"hh\:mm\:ss");
-        }
 
+        }
         private async void LoadSudokuAsync()
         {
             try
@@ -65,32 +67,49 @@ namespace GameOn.Views.Pages
 
                 //obtenir la participation au sudoku du jour
                 SudokuParticipation = dal.SudokuParticipationFact.GetTodayParticipationOfUser(ConnectionSingleton.UserConnected.Id);
-                if (SudokuParticipation == null)
+
+                if(SudokuParticipation == null)
                 {
                     //si il n'y a pas de participation, obtenir le sudoku du jour
-                    SudokuModel = dal.SudokuFactory.GetGameOfTheDay();
+                    _SudokuModel = dal.SudokuFactory.GetGameOfTheDay();
 
                     // si le sudoku du jour n'existe pas le crée
-                    if (SudokuModel == null)
+                    if (_SudokuModel == null)
                     {
-                        SudokuModel = await Sudoku.CreateSudoku();
-                        dal.SudokuFactory.Save(SudokuModel);
+                        _SudokuModel = await Sudoku.CreateSudoku();
+                        dal.SudokuFactory.Save(_SudokuModel);
                     }
                     //creé le sudokuParaticipation pour ce sudoku
                     SudokuParticipation = new SudokuParticipation()
                     {
                         StartDate = DateTime.Now,
                         Id = 0,
-                        SudokuId = SudokuModel.Id,
+                        SudokuId = _SudokuModel.Id,
                         PointWon = 0,
                         UserId = ConnectionSingleton.UserConnected.Id,
-                        ActualGrid = SudokuModel.Grid
+                        ActualGrid = _SudokuModel.Grid
                     };
                     dal.SudokuParticipationFact.Save(SudokuParticipation);
                 }
 
                 //transformer la participation en gameLogic
+
+                if(_SudokuModel == null)
+                {
+                    _SudokuModel = dal.SudokuFactory.GetGameOfTheDay();
+                }
                 _SudokuLogic = SudokuLogic.SudokuParticipationToLogic(SudokuParticipation);
+
+                //met en premier les cases qui ne peuvent pas etre edité
+                int[,] modelgrid = JsonConvert.DeserializeObject<int[,]>(_SudokuModel.Grid);
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
+                        textBox.IsReadOnly = modelgrid[i,j] != 0;
+                    }
+                }
 
                 //ouvrire la fenetre avec les données du gameParticipation
                 for (int i = 0; i < 9; i++)
@@ -118,12 +137,12 @@ namespace GameOn.Views.Pages
                 for (int j = 0; j < 9; j++)
                 {
                     TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
-
-                    _SudokuLogic.Grid[i, j] = int.Parse(textBox.Text == "" ? "0" : textBox.Text);
+                    _SudokuLogic.Grid[i, j] = int.Parse(textBox.Text == ""? "0": textBox.Text);
 
                 }
             }
-            string t = _SudokuLogic.Grid.ToString();
+            string jsonGrid = JsonConvert.SerializeObject(_SudokuLogic.Grid);
+            SudokuParticipation.ActualGrid = jsonGrid;
             new DAL().SudokuParticipationFact.Save(SudokuParticipation);
 
         }
