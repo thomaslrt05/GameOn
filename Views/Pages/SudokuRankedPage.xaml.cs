@@ -29,7 +29,7 @@ namespace GameOn.Views.Pages
     public partial class SudokuRankedPage : Page
     {
         public SudokuParticipation? SudokuParticipation { get; set; }
-        public Sudoku? SudokuModel { get; set; }
+        public Sudoku? _SudokuModel { get; set; }
         public SudokuLogic _SudokuLogic { get; set; }
         private DispatcherTimer gameTimer;
         private TimeSpan gameTimeRemaining;
@@ -48,8 +48,10 @@ namespace GameOn.Views.Pages
             gameTimer = new DispatcherTimer();
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Interval = TimeSpan.FromSeconds(1);
-            DateTime dateTime = DateTime.Today.Add(new TimeSpan(24, 0, 0));
-            gameTimeRemaining = dateTime - SudokuParticipation.StartDate;
+            DateTime startTimer = SudokuParticipation.StartDate;
+            DateTime dateEndTimer = startTimer.AddDays(1);
+            DateTime currentTime = DateTime.Now;
+            gameTimeRemaining = dateEndTimer - currentTime;
             gameTimer.Start();
         }
 
