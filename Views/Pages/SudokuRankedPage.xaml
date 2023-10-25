@@ -287,9 +287,9 @@
 
     </Page.Resources>
 
-    <Canvas Margin="0,0,0,0"            
-        Height="490"
-        Width="580">
+
+    <Canvas Margin="0">
+
         <Button Content="Enregistrer" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
 
 
@@ -594,6 +594,18 @@
                 <TextBox Name="text87" Grid.Column="1" Grid.Row="2" Style="{StaticResource BlueTextBlock}"></TextBox>
                 <TextBox Name="text88" Grid.Column="2" Grid.Row="2" Style="{StaticResource BlueTextBlock}"></TextBox>
             </Grid>
+
+        </Grid>
+
+        <Grid HorizontalAlignment="Left" Height="320" Width="324" VerticalAlignment="Top" Canvas.Left="453" Canvas.Top="65">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label x:Name="Timer" Grid.Row="0" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Center" Content="00:00:00" />
 
         </Grid>
     </Canvas>

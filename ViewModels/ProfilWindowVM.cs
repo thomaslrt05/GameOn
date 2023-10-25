@@ -37,6 +37,27 @@ namespace GameOn.ViewModels
             }
         }
 
+        private DAL dal;
+
+        private string _currentPassword;
+        public string CurrentPassword
+        {
+            set
+            {
+                _currentPassword = value;
+                OnPropertyChanged(nameof(CurrentPassword));
+            }
+        }
+        private string _newPassword;
+        public string NewPassword
+        {
+            set
+            {
+                _newPassword = value;
+                OnPropertyChanged(nameof(NewPassword));
+            }
+        }
+
         private bool CanExecute(object parameter)
         {
             return true;
@@ -46,6 +67,7 @@ namespace GameOn.ViewModels
         {
 
             UserConnected = ConnectionSingleton.UserConnected;
+            dal = new DAL();
             this.ModifyButton = new RelayCommand(ExecuteModifyButton, CanExecute);
            
         }
@@ -54,10 +76,18 @@ namespace GameOn.ViewModels
 
         public void ExecuteModifyButton(object parameter)
         {
-
+            if (_currentPassword is not null || _newPassword is not null)
+                if (UserConnected.Password == User.Hash(_currentPassword))
+                {
+                    dal.UserFact.ChangePassword(UserConnected, _newPassword);
+                    MessageBox.Show("Mot de passe changé");
+                    CurrentPassword = string.Empty;
+                    NewPassword = string.Empty;
+                }
+                else MessageBox.Show("Le mot de passe actuel est éronnée");
+            else MessageBox.Show("Un des champs requis est vide");
         }
 
-
-
+   
     }
 }

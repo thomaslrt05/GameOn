@@ -125,6 +125,37 @@ namespace GameOn.DataAccesLayer.Factories
 
             return user;
         }
+
+        public void ChangePassword(User user,string newPassword)
+        {
+            string newHashedPassword = User.Hash(newPassword);
+            MySqlConnection? mySqlCnn = null;
+            MySqlDataReader? mySqlDataReader = null;
+
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "UPDATE user SET Password = @Password WHERE id = @id";
+                mySqlCmd.Parameters.AddWithValue("@Password", newHashedPassword);
+                mySqlCmd.Parameters.AddWithValue("@id", user.Id);
+
+                mySqlDataReader = mySqlCmd.ExecuteReader();
+                if (mySqlDataReader.Read())
+                {
+                    user = CreateFromReader(mySqlDataReader);
+                }
+            }
+            finally
+            {
+                mySqlDataReader?.Close();
+                mySqlCnn?.Close();
+            }
+
+            
+        }
         public UserFactory() { }
 
 

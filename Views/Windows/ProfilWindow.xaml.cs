@@ -11,7 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using GameOn.DataAccesLayer;
 using GameOn.ViewModels;
+using GameOn.Models;
 
 namespace GameOn.Views.Windows
 {
@@ -20,10 +22,15 @@ namespace GameOn.Views.Windows
     /// </summary>
     public partial class ProfilWindow : Window
     {
+       
         public ProfilWindow()
         {
             InitializeComponent();
             this.DataContext = new ProfilWindowVM();
+
         }
+
+
+   
     }
 }

@@ -18,6 +18,7 @@ using GameOn.Models;
 using GameOn.ViewModels;
 using GameOn.DataAccesLayer;
 using System.Threading.Channels;
+using System.Windows.Threading;
 using Newtonsoft.Json;
 
 namespace GameOn.Views.Pages
@@ -28,15 +29,35 @@ namespace GameOn.Views.Pages
     public partial class SudokuRankedPage : Page
     {
         public SudokuParticipation? SudokuParticipation { get; set; }
-        public Sudoku? _SudokuModel { get; set; }
+        public Sudoku? SudokuModel { get; set; }
         public SudokuLogic _SudokuLogic { get; set; }
+        private DispatcherTimer gameTimer;
+        private TimeSpan gameTimeRemaining;
+
 
         public SudokuRankedPage()
         {
             InitializeComponent();
             this.DataContext = new SudokuRankedPageVM();
             LoadSudokuAsync();
-            
+            LoadTimer();
+        }
+
+        private void LoadTimer() 
+        {
+            gameTimer = new DispatcherTimer();
+            gameTimer.Tick += GameTimer_Tick;
+            gameTimer.Interval = TimeSpan.FromSeconds(1);
+            DateTime dateTime = DateTime.Today.Add(new TimeSpan(24, 0, 0));
+            gameTimeRemaining = dateTime - SudokuParticipation.StartDate;
+            gameTimer.Start();
+        }
+
+        private void GameTimer_Tick(object sender, EventArgs e)
+        {
+            gameTimeRemaining = gameTimeRemaining.Subtract(TimeSpan.FromSeconds(1));
+            Timer.Content = gameTimeRemaining.ToString(@"hh\:mm\:ss");
+
         }
         private async void LoadSudokuAsync()
         {
@@ -46,6 +67,7 @@ namespace GameOn.Views.Pages
 
                 //obtenir la participation au sudoku du jour
                 SudokuParticipation = dal.SudokuParticipationFact.GetTodayParticipationOfUser(ConnectionSingleton.UserConnected.Id);
+
                 if(SudokuParticipation == null)
                 {
                     //si il n'y a pas de participation, obtenir le sudoku du jour
@@ -71,6 +93,7 @@ namespace GameOn.Views.Pages
                 }
 
                 //transformer la participation en gameLogic
+
                 if(_SudokuModel == null)
                 {
                     _SudokuModel = dal.SudokuFactory.GetGameOfTheDay();
@@ -98,7 +121,7 @@ namespace GameOn.Views.Pages
                         textBox.Text = int.Parse(_SudokuLogic.Grid[i, j].ToString()) != 0 ? _SudokuLogic.Grid[i, j].ToString() : "";
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -114,7 +137,6 @@ namespace GameOn.Views.Pages
                 for (int j = 0; j < 9; j++)
                 {
                     TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
-
                     _SudokuLogic.Grid[i, j] = int.Parse(textBox.Text == ""? "0": textBox.Text);
 
                 }
@@ -126,4 +148,5 @@ namespace GameOn.Views.Pages
         }
 
     }
+
 }
