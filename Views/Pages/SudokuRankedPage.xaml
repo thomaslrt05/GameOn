@@ -290,8 +290,8 @@
 
 
     <Canvas Margin="0">
-
-        <Button Content="Enregistrer" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
+        <Image Source="\Img\Jeu.png" Width="800"></Image>
+        
 
 
         <Grid Style="{StaticResource GameGridStyle}">
@@ -607,7 +607,7 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Label x:Name="Timer" Grid.Row="0" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Center" Content="00:00:00" />
-
+            <Button Width="100" Height="50" Grid.Row="1" Content="Enregistrer" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
         </Grid>
     </Canvas>
 

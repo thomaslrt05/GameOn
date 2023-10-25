@@ -48,8 +48,11 @@ namespace GameOn.Views.Pages
             gameTimer = new DispatcherTimer();
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Interval = TimeSpan.FromSeconds(1);
-            DateTime dateTime = DateTime.Now.AddHours(24);
-            gameTimeRemaining = dateTime - SudokuParticipation.StartDate;
+
+            DateTime startTimer = SudokuParticipation.StartDate;
+            DateTime dateEndTimer = startTimer.AddDays(1);
+            DateTime currentTime = DateTime.Now;
+            gameTimeRemaining = dateEndTimer - currentTime;
             gameTimer.Start();
         }
 
