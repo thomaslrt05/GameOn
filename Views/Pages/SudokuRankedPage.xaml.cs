@@ -29,7 +29,7 @@ namespace GameOn.Views.Pages
     public partial class SudokuRankedPage : Page
     {
         public SudokuParticipation? SudokuParticipation { get; set; }
-        public Sudoku? SudokuModel { get; set; }
+        public Sudoku? _SudokuModel { get; set; }
         public SudokuLogic _SudokuLogic { get; set; }
         private DispatcherTimer gameTimer;
         private TimeSpan gameTimeRemaining;
@@ -48,7 +48,7 @@ namespace GameOn.Views.Pages
             gameTimer = new DispatcherTimer();
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Interval = TimeSpan.FromSeconds(1);
-            DateTime dateTime = DateTime.Today.Add(new TimeSpan(24, 0, 0));
+            DateTime dateTime = DateTime.Now.AddHours(24);
             gameTimeRemaining = dateTime - SudokuParticipation.StartDate;
             gameTimer.Start();
         }
@@ -147,6 +147,15 @@ namespace GameOn.Views.Pages
 
         }
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            MessageBox.Show("stp");
+            // Code à exécuter lorsque le texte dans la TextBox change
+            TextBox textBox = (TextBox)sender;
+            string newText = textBox.Text;
+
+            // Vous pouvez valider ou effectuer d'autres opérations sur le nouveau texte ici.
+        }
     }
 
 }
