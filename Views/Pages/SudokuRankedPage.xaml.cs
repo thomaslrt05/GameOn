@@ -48,6 +48,7 @@ namespace GameOn.Views.Pages
             gameTimer = new DispatcherTimer();
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Interval = TimeSpan.FromSeconds(1);
+
             DateTime startTimer = SudokuParticipation.StartDate;
             DateTime dateEndTimer = startTimer.AddDays(1);
             DateTime currentTime = DateTime.Now;
@@ -149,6 +150,15 @@ namespace GameOn.Views.Pages
 
         }
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            MessageBox.Show("stp");
+            // Code à exécuter lorsque le texte dans la TextBox change
+            TextBox textBox = (TextBox)sender;
+            string newText = textBox.Text;
+
+            // Vous pouvez valider ou effectuer d'autres opérations sur le nouveau texte ici.
+        }
     }
 
 }
