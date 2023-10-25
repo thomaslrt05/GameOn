@@ -17,6 +17,8 @@ using GameOn.Models.Game;
 using GameOn.Models;
 using GameOn.ViewModels;
 using GameOn.DataAccesLayer;
+using System.Threading.Channels;
+using Newtonsoft.Json;
 
 namespace GameOn.Views.Pages
 {
@@ -25,13 +27,17 @@ namespace GameOn.Views.Pages
     /// </summary>
     public partial class SudokuRankedPage : Page
     {
+        public SudokuParticipation? SudokuParticipation { get; set; }
+        public Sudoku? _SudokuModel { get; set; }
+        public SudokuLogic _SudokuLogic { get; set; }
+
         public SudokuRankedPage()
         {
             InitializeComponent();
             this.DataContext = new SudokuRankedPageVM();
             LoadSudokuAsync();
+            
         }
-
         private async void LoadSudokuAsync()
         {
             try
@@ -39,33 +45,48 @@ namespace GameOn.Views.Pages
                 DAL dal = new DAL();
 
                 //obtenir la participation au sudoku du jour
-                SudokuParticipation? sudokuParticipation = dal.SudokuParticipationFact.GetTodayParticipationOfUser(ConnectionSingleton.UserConnected.Id);
-                if(sudokuParticipation == null)
+                SudokuParticipation = dal.SudokuParticipationFact.GetTodayParticipationOfUser(ConnectionSingleton.UserConnected.Id);
+                if(SudokuParticipation == null)
                 {
                     //si il n'y a pas de participation, obtenir le sudoku du jour
-                    Sudoku? sudokuModel = dal.SudokuFactory.GetGameOfTheDay();
+                    _SudokuModel = dal.SudokuFactory.GetGameOfTheDay();
 
                     // si le sudoku du jour n'existe pas le crée
-                    if (sudokuModel == null)
+                    if (_SudokuModel == null)
                     {
-                        sudokuModel = await Sudoku.CreateSudoku();
-                        dal.SudokuFactory.Save(sudokuModel);
+                        _SudokuModel = await Sudoku.CreateSudoku();
+                        dal.SudokuFactory.Save(_SudokuModel);
                     }
                     //creé le sudokuParaticipation pour ce sudoku
-                    sudokuParticipation = new SudokuParticipation()
+                    SudokuParticipation = new SudokuParticipation()
                     {
                         StartDate = DateTime.Now,
                         Id = 0,
-                        SudokuId = sudokuModel.Id,
+                        SudokuId = _SudokuModel.Id,
                         PointWon = 0,
                         UserId = ConnectionSingleton.UserConnected.Id,
-                        ActualGrid = sudokuModel.Grid
+                        ActualGrid = _SudokuModel.Grid
                     };
-                    dal.SudokuParticipationFact.Save(sudokuParticipation);
+                    dal.SudokuParticipationFact.Save(SudokuParticipation);
                 }
 
                 //transformer la participation en gameLogic
-                SudokuLogic sudokuLogic = SudokuLogic.SudokuParticipationToLogic(sudokuParticipation);
+                if(_SudokuModel == null)
+                {
+                    _SudokuModel = dal.SudokuFactory.GetGameOfTheDay();
+                }
+                _SudokuLogic = SudokuLogic.SudokuParticipationToLogic(SudokuParticipation);
+
+                //met en premier les cases qui ne peuvent pas etre edité
+                int[,] modelgrid = JsonConvert.DeserializeObject<int[,]>(_SudokuModel.Grid);
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
+                        textBox.IsReadOnly = modelgrid[i,j] != 0;
+                    }
+                }
 
                 //ouvrire la fenetre avec les données du gameParticipation
                 for (int i = 0; i < 9; i++)
@@ -74,7 +95,7 @@ namespace GameOn.Views.Pages
                     {
                         TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
 
-                        textBox.Text = int.Parse(sudokuLogic.Grid[i, j].ToString()) != 0 ? sudokuLogic.Grid[i, j].ToString() : "";
+                        textBox.Text = int.Parse(_SudokuLogic.Grid[i, j].ToString()) != 0 ? _SudokuLogic.Grid[i, j].ToString() : "";
                     }
                 }
                 
@@ -85,6 +106,24 @@ namespace GameOn.Views.Pages
             }
         }
 
-       
+        public void SaveGame(object sender, RoutedEventArgs e)
+        {
+            //Actualiser la grille de gameLogic avec tout les chiffres de la vue
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
+
+                    _SudokuLogic.Grid[i, j] = int.Parse(textBox.Text == ""? "0": textBox.Text);
+
+                }
+            }
+            string jsonGrid = JsonConvert.SerializeObject(_SudokuLogic.Grid);
+            SudokuParticipation.ActualGrid = jsonGrid;
+            new DAL().SudokuParticipationFact.Save(SudokuParticipation);
+
+        }
+
     }
 }
