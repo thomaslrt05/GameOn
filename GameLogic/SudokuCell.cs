@@ -10,6 +10,7 @@ namespace GameOn.Models.Game
     {
         public int? Value { get; set; }
         public bool IsEditable { get; set; }
+        public bool IsNote { get; set; }
 
         public override string ToString()
         {
