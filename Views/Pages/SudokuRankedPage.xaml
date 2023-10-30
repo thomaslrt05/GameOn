@@ -290,8 +290,10 @@
 
 
     <Canvas Margin="0">
+
+
         <Image Source="\Img\Jeu.png" Width="800"></Image>
-        
+
 
 
         <Grid Style="{StaticResource GameGridStyle}">
@@ -307,7 +309,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0"
-              Grid.Column="0">
+              Grid.Column="0" Name="grid0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -325,17 +327,18 @@
                 <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
                 <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
 
+
                 <TextBox Name="text00" Grid.Column="0" Grid.Row="0" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
-                <TextBox Name="text01" Grid.Column="1" Grid.Row="0" Style="{StaticResource BlueTextBlock}"></TextBox>
-                <TextBox Name="text02" Grid.Column="2" Grid.Row="0" Style="{StaticResource BlueTextBlock}"></TextBox>
+                <TextBox Name="text01" Grid.Column="1" Grid.Row="0" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
+                <TextBox Name="text02" Grid.Column="2" Grid.Row="0" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
 
-                <TextBox Name="text10" Grid.Column="0" Grid.Row="1" Style="{StaticResource BlueTextBlock}"></TextBox>
-                <TextBox Name="text11" Grid.Column="1" Grid.Row="1" Style="{StaticResource BlueTextBlock}"></TextBox>
-                <TextBox Name="text12" Grid.Column="2" Grid.Row="1" Style="{StaticResource BlueTextBlock}"></TextBox>
+                <TextBox Name="text10" Grid.Column="0" Grid.Row="1" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
+                <TextBox Name="text11" Grid.Column="1" Grid.Row="1" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
+                <TextBox Name="text12" Grid.Column="2" Grid.Row="1" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
 
-                <TextBox Name="text20" Grid.Column="0" Grid.Row="2" Style="{StaticResource BlueTextBlock}"></TextBox>
-                <TextBox Name="text21" Grid.Column="1" Grid.Row="2" Style="{StaticResource BlueTextBlock}"></TextBox>
-                <TextBox Name="text22" Grid.Column="2" Grid.Row="2" Style="{StaticResource BlueTextBlock}"></TextBox>
+                <TextBox Name="text20" Grid.Column="0" Grid.Row="2" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
+                <TextBox Name="text21" Grid.Column="1" Grid.Row="2" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
+                <TextBox Name="text22" Grid.Column="2" Grid.Row="2" Style="{StaticResource BlueTextBlock}" TextChanged="TextBox_TextChanged"></TextBox>
 
 
             </Grid>
@@ -350,7 +353,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="44.667"/>
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource MiniBorderStyle}" />
@@ -565,7 +568,7 @@
             </Grid>
 
             <Grid Grid.Row="2"
-              Grid.Column="2" Name="grid9">
+              Grid.Column="2" Name="grid8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -609,6 +612,11 @@
             <Label x:Name="Timer" Grid.Row="0" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Center" Content="00:00:00" />
             <Button Width="100" Height="50" Grid.Row="1" Content="Enregistrer" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
         </Grid>
+        <StackPanel HorizontalAlignment="Left" Height="80" Width="136" VerticalAlignment="Top" Canvas.Left="427" Canvas.Top="10">
+            <Label FontWeight="Bold">Application Options</Label>
+            <CheckBox Checked="CheckNotes" Unchecked="UnCheckNotes">Enable notes</CheckBox>
+
+        </StackPanel>
     </Canvas>
 
 

@@ -20,6 +20,8 @@ using GameOn.DataAccesLayer;
 using System.Threading.Channels;
 using System.Windows.Threading;
 using Newtonsoft.Json;
+using Google.Protobuf.WellKnownTypes;
+using System.ComponentModel;
 
 namespace GameOn.Views.Pages
 {
@@ -33,10 +35,12 @@ namespace GameOn.Views.Pages
         public SudokuLogic _SudokuLogic { get; set; }
         private DispatcherTimer gameTimer;
         private TimeSpan gameTimeRemaining;
+        public bool NoteEnabled { get; set; }
 
 
         public SudokuRankedPage()
         {
+            NoteEnabled = false;
             InitializeComponent();
             this.DataContext = new SudokuRankedPageVM();
             LoadSudokuAsync();
@@ -82,7 +86,7 @@ namespace GameOn.Views.Pages
                         _SudokuModel = await Sudoku.CreateSudoku();
                         dal.SudokuFactory.Save(_SudokuModel);
                     }
-                    //creé le sudokuParaticipation pour ce sudoku
+                    //creé le sudokuParaticipation pour ce user et ce sudoku
                     SudokuParticipation = new SudokuParticipation()
                     {
                         StartDate = DateTime.Now,
@@ -90,7 +94,8 @@ namespace GameOn.Views.Pages
                         SudokuId = _SudokuModel.Id,
                         PointWon = 0,
                         UserId = ConnectionSingleton.UserConnected.Id,
-                        ActualGrid = _SudokuModel.Grid
+                        //crée la grille a partir du model
+                        ActualGrid = SudokuParticipation.ModelGridToParticipationGrid(_SudokuModel.Grid)
                     };
                     dal.SudokuParticipationFact.Save(SudokuParticipation);
                 }
@@ -103,25 +108,22 @@ namespace GameOn.Views.Pages
                 }
                 _SudokuLogic = SudokuLogic.SudokuParticipationToLogic(SudokuParticipation);
 
-                //met en premier les cases qui ne peuvent pas etre edité
-                int[,] modelgrid = JsonConvert.DeserializeObject<int[,]>(_SudokuModel.Grid);
-                for (int i = 0; i < 9; i++)
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
-                        textBox.IsReadOnly = modelgrid[i,j] != 0;
-                    }
-                }
-
                 //ouvrire la fenetre avec les données du gameParticipation
                 for (int i = 0; i < 9; i++)
                 {
                     for (int j = 0; j < 9; j++)
                     {
                         TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
+                        SudokuCell cellValue = _SudokuLogic.Grid[i, j];
 
-                        textBox.Text = int.Parse(_SudokuLogic.Grid[i, j].ToString()) != 0 ? _SudokuLogic.Grid[i, j].ToString() : "";
+                        textBox.Text = cellValue.Value != 0 ? cellValue.Value.ToString() : "";
+                        textBox.IsReadOnly = !cellValue.IsEditable;
+                        textBox.Tag = cellValue.IsNote.ToString();
+                        if(cellValue.IsNote)
+                        {
+                            textBox.Background = Brushes.Red;
+                        }
+                        
                     }
                 }
 
@@ -140,7 +142,12 @@ namespace GameOn.Views.Pages
                 for (int j = 0; j < 9; j++)
                 {
                     TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
-                    _SudokuLogic.Grid[i, j] = int.Parse(textBox.Text == ""? "0": textBox.Text);
+
+                    _SudokuLogic.Grid[i, j] = new SudokuCell { 
+                        IsEditable = !textBox.IsReadOnly, 
+                        IsNote = bool.Parse(textBox.Tag as string), 
+                        Value = int.Parse(textBox.Text != "" ? textBox.Text : "0")
+                    };
 
                 }
             }
@@ -150,15 +157,63 @@ namespace GameOn.Views.Pages
 
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs args)
         {
-            MessageBox.Show("stp");
             // Code à exécuter lorsque le texte dans la TextBox change
             TextBox textBox = (TextBox)sender;
             string newText = textBox.Text;
+            textBox.Tag = NoteEnabled.ToString();
 
-            // Vous pouvez valider ou effectuer d'autres opérations sur le nouveau texte ici.
+            Grid parentGrid = (Grid)textBox.Parent;
+
+            if (NoteEnabled)
+            {
+                textBox.Background = Brushes.Red;
+            }
+            else
+            {
+                if (ShouldSetBackgroundWhite(parentGrid))
+                {
+                    textBox.Background = Brushes.White;
+                }
+                else
+                {
+                    textBox.Background = Brushes.LightBlue;
+                }
+            }
+
+            if (!IsValidInteger(newText, out int newValue) || !IsInRange(newValue, 0, 9))
+            {
+                if (!string.IsNullOrEmpty(newText))
+                {
+                    MessageBox.Show("La valeur doit être un entier entre 0 et 9.");
+                }
+                textBox.Text = "";
+            }
         }
+        private bool IsValidInteger(string text, out int value)
+        {
+            return int.TryParse(text, out value);
+        }
+
+        private bool IsInRange(int value, int min, int max)
+        {
+            return value >= min && value <= max;
+        }
+        private void CheckNotes(object sender, RoutedEventArgs e)
+        {
+            NoteEnabled = true;
+        }
+        private void UnCheckNotes(object sender, RoutedEventArgs e)
+        {
+            NoteEnabled = false;
+        }
+        private bool ShouldSetBackgroundWhite(Grid parentGrid)
+        {
+            string[] whiteGrids = { "grid1", "grid3", "grid5", "grid7" };
+            return whiteGrids.Contains(parentGrid.Name);
+        }
+
     }
 
 }

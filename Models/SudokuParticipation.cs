@@ -1,8 +1,13 @@
-﻿using System;
+﻿using GameOn.Models.Game;
+using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GameOn.Models
 {
@@ -15,5 +20,33 @@ namespace GameOn.Models
         public int SudokuId { get; set;}
         public int UserId { get; set;}
         public string ActualGrid { get; set; }
+
+        public static string ModelGridToParticipationGrid(string modelGrid)
+        {
+            //on re crée le tableau a partir du string qui représente la grille en BD
+            int[][] intArray = JsonConvert.DeserializeObject<int[][]>(modelGrid);
+            SudokuCell[,] sudokuGrid = new SudokuCell[intArray.Length, intArray[0].Length];
+
+            for (int i = 0; i < intArray.Length; i++)
+            {
+                for (int j = 0; j < intArray[i].Length; j++)
+                {
+                    int value = intArray[i][j];
+                    SudokuCell cell = new SudokuCell
+                    {
+                        Value = value,
+                        IsEditable = (value == 0),
+                        IsNote = false
+                    };
+                    sudokuGrid[i, j] = cell;
+                }
+            }
+
+            string jsonString = JsonConvert.SerializeObject(sudokuGrid);
+            return jsonString;
+
+        }
     }
+
+   
 }
