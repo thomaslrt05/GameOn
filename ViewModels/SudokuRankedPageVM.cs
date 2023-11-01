@@ -41,30 +41,7 @@ namespace GameOn.ViewModels
 
         public SudokuRankedPageVM()
         {
-
-        }
-
-        
-        private string enteredNumber;
-        public string EnteredNumber
-        {
-            get { return enteredNumber; }
-            set
-            {
-                enteredNumber = value;
-                OnPropertyChanged(nameof(EnteredNumber));
-            }
-        }
-        private void CellMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is TextBox textBox)
-            {
-                textBox.Focus();
-            }
-        }
-        public bool IsNumberValid(int row, int col, int number)
-        {
-            return true;
+            this.ChangePageCommand = new RelayCommand(ExecuteBackToMenuButton,CanExecute);
         }
 
         private ICommand _changePageCommand;
@@ -75,40 +52,17 @@ namespace GameOn.ViewModels
             set { _changePageCommand = value; }
         }
 
-        private void ExecuteCellClick(object parameter)
+       
+        private void ExecuteBackToMenuButton(object parameter)
         {
-            if (parameter is string cellNumber)
-            {
-                // Faites ce que vous devez faire en fonction du numéro de cellule, par exemple :
-                MessageBox.Show("Cellule " + cellNumber + " cliquée");
-            }
+            MainWindowVM mainWindowVM = MainWindowVM.Instance;
+            Instance.CurrentPage = new LandingPage();
         }
 
-        private bool CanExecuteCellClick(object parameter)
+        private bool CanExecute(object parameter)
         {
-            return true; // Vous pouvez ajouter une logique de validation ici si nécessaire
+            return true;
         }
-
-        /*
-        private void CellMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is ContentControl contentControl)
-            {
-                // Vous pouvez accéder à des informations spécifiques à la cellule à partir du DataContext du ContentControl.
-                // Par exemple, pour obtenir le numéro de cellule, vous pouvez utiliser le chemin du Binding.
-                string cellNumber = contentControl.GetBindingExpression(ContentControl.ContentProperty)?.ParentBinding.Path.Path;
-
-                // Faites ce que vous devez faire en fonction du numéro de cellule, par exemple :
-                MessageBox.Show("Cellule " + cellNumber + " cliquée");
-
-            }
-        }
-        */
-        private void ProcessCellClick(Int32 col, Int32 row)
-        {
-            return;
-        }
-
 
     }
 

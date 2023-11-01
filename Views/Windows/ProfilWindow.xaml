@@ -4,10 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameOn.Views.Windows"
-        xmlns:ViewModels="clr-namespace:GameOn.ViewModels"
-        d:DataContext="{d:DesignInstance Type=ViewModels:LoginPageVM}"
         mc:Ignorable="d"
-        Title="ProfilWindow" Height="250" Width="250">
+        Title="ProfilWindow" Height="275" Width="275">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -16,6 +14,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -38,13 +37,16 @@
         <TextBlock Text="{Binding UserConnected.Departement.Name}" Grid.Column="1" Grid.Row="3" Margin="0,2,0,2"/>
 
         <Label Grid.Column="0" Grid.Row="4" Content="Actuel mot de passe*" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
-        <TextBox Text="{Binding CurrentPassword}"  Grid.Column="1" Grid.Row="4" Margin="0,1,0,2"/>
+        <PasswordBox x:Name="currentPassword" Grid.Column="1" Grid.Row="4" Margin="0,1,0,2"/>
 
         <Label Grid.Column="0" Grid.Row="4" Content="Nouveau mot de passe*" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,33,0,33" Grid.RowSpan="3"></Label>
-        <TextBox Text="{Binding NewPassword}" Grid.Column="1" Grid.Row="5" Margin="0,2,0,2"/>
+        <PasswordBox x:Name="newPassword" Grid.Column="1" Grid.Row="5" Margin="0,2,0,2"/>
+
+        <Label Grid.Column="0" Grid.Row="5" Content="Confirmer mot de passe*" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,33,0,33" Grid.RowSpan="3"></Label>
+        <PasswordBox x:Name="newPasswordComfirmed" Grid.Column="1" Grid.Row="6" Margin="0,2,0,2"/>
 
 
-        <Button Command="{Binding ModifyButton}"  Content="Valider" Grid.Column="1" Grid.Row="6" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="11,1,10,2"/>
+        <Button Click="ExecuteModifyButton"  Content="Valider" Grid.Column="1" Grid.Row="7" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="11,1,10,2"/>
 
     </Grid>
 </Window>
