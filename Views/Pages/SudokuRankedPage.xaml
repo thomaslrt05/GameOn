@@ -604,17 +604,28 @@
         <Grid HorizontalAlignment="Left" Height="320" Width="324" VerticalAlignment="Top" Canvas.Left="453" Canvas.Top="65">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <Label x:Name="Timer" Grid.Row="0" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Center" Content="00:00:00" />
-            <Button Width="100" Height="50" Grid.Row="1" Content="Enregistrer" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
+            <Label Content="Temps Restant" Grid.Row="0" FontWeight="Bold" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+            <Label x:Name="TimerRemain" Grid.Row="0" Grid.Column="1" FontSize="35" HorizontalAlignment="Center" VerticalAlignment="Center" Content="00:00:00" />
+
+            <Label Content="Temps de jeu" Grid.Row="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+            <Label x:Name="TimerGame" Grid.Row="1" Grid.Column="1" FontSize="35" HorizontalAlignment="Center" VerticalAlignment="Center" Content="00:00:00" />
+
+            <Button Width="100" Height="50" Grid.Row="2" Content="Enregistrer" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
+            <Button Width="100" Height="50" Grid.Row="2" Grid.Column="1" Command="{Binding ChangePageCommand}" Content="Retour au menu" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
         </Grid>
+        
+        
+        
         <StackPanel HorizontalAlignment="Left" Height="80" Width="136" VerticalAlignment="Top" Canvas.Left="427" Canvas.Top="10">
-            <Label FontWeight="Bold">Application Options</Label>
-            <CheckBox Checked="CheckNotes" Unchecked="UnCheckNotes">Enable notes</CheckBox>
+            <Label FontWeight="Bold">Options</Label>
+            <CheckBox Checked="CheckNotes" Unchecked="UnCheckNotes">Activer notes</CheckBox>
 
         </StackPanel>
     </Canvas>

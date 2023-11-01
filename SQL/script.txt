@@ -37,12 +37,12 @@ CREATE TABLE sudoku (
 -- Création de la table GameParticipation
 CREATE TABLE sudokuParticipation (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    EndDate DATE,
-    startDate DATE NOT NULL,
+    EndDate DATETIME,
+    startDate DATETIME NOT NULL,
     pointWon INT DEFAULT 0,
     actualGrid LONGTEXT NOT NULL,
     sudoku INT,
     user_id INT,
     FOREIGN KEY (sudoku) REFERENCES sudoku(id),
     FOREIGN KEY (user_id) REFERENCES user(Id)
-);
+); 

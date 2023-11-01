@@ -33,8 +33,12 @@ namespace GameOn.Views.Pages
         public SudokuParticipation? SudokuParticipation { get; set; }
         public Sudoku? _SudokuModel { get; set; }
         public SudokuLogic _SudokuLogic { get; set; }
-        private DispatcherTimer gameTimer;
+
+        private DispatcherTimer gameTimerRemain;
         private TimeSpan gameTimeRemaining;
+
+        private DispatcherTimer gameTimer;
+        private TimeSpan gameTime;
         public bool NoteEnabled { get; set; }
 
 
@@ -43,30 +47,55 @@ namespace GameOn.Views.Pages
             NoteEnabled = false;
             InitializeComponent();
             this.DataContext = new SudokuRankedPageVM();
-            LoadSudokuAsync();
-            LoadTimer();
+            InitPage();
+        }
+        private async Task InitPage()
+        {
+            await LoadSudokuAsync();
+            await LoadTimerRemain();
+            await LoadTimerGame();
         }
 
-        private void LoadTimer() 
+        private async Task LoadTimerGame()
         {
             gameTimer = new DispatcherTimer();
-            gameTimer.Tick += GameTimer_Tick;
+            gameTimer.Tick += GameTimer_TickGame;
             gameTimer.Interval = TimeSpan.FromSeconds(1);
 
             DateTime startTimer = SudokuParticipation.StartDate;
+            DateTime currentTime = DateTime.Now;
+            gameTime = currentTime - startTimer;
+            gameTimer.Start();
+        }
+
+        private void GameTimer_TickGame(object sender, EventArgs e)
+        {
+            gameTime = gameTime.Add(TimeSpan.FromSeconds(1));
+            TimerGame.Content = gameTime.ToString(@"hh\:mm\:ss");
+
+        }
+
+
+        private async Task LoadTimerRemain() 
+        {
+            gameTimerRemain = new DispatcherTimer();
+            gameTimerRemain.Tick += GameTimer_Tick;
+            gameTimerRemain.Interval = TimeSpan.FromSeconds(1);
+
+            DateTime startTimer = _SudokuModel.CreationDate;
             DateTime dateEndTimer = startTimer.AddDays(1);
             DateTime currentTime = DateTime.Now;
             gameTimeRemaining = dateEndTimer - currentTime;
-            gameTimer.Start();
+            gameTimerRemain.Start();
         }
 
         private void GameTimer_Tick(object sender, EventArgs e)
         {
             gameTimeRemaining = gameTimeRemaining.Subtract(TimeSpan.FromSeconds(1));
-            Timer.Content = gameTimeRemaining.ToString(@"hh\:mm\:ss");
+            TimerRemain.Content = gameTimeRemaining.ToString(@"hh\:mm\:ss");
 
         }
-        private async void LoadSudokuAsync()
+        private async Task LoadSudokuAsync()
         {
             try
             {
@@ -126,7 +155,7 @@ namespace GameOn.Views.Pages
                         
                     }
                 }
-
+                
             }
             catch (Exception ex)
             {
