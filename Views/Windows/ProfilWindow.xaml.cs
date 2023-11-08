@@ -96,15 +96,16 @@ namespace GameOn.Views.Windows
                     {
                         dal.UserFact.ChangePassword(UserConnected, _newPassword);
                         MessageBox.Show("Mot de passe changé");
-                        CurrentPassword = string.Empty;
-                        NewPassword = string.Empty;
+                        currentPassword.Password = string.Empty;
+                        newPassword.Password = string.Empty;
+                        newPasswordComfirmed.Password = string.Empty;
                     }
                     else
                     {
                         MessageBox.Show("Les nouveaux mots de passe ne correspondents pas");
-                        CurrentPassword = string.Empty;
-                        NewPassword = string.Empty;
-                        NewPasswordComfirmed = string.Empty;
+                        currentPassword.Password = string.Empty;
+                        newPassword.Password = string.Empty;
+                        newPasswordComfirmed.Password = string.Empty;
                     }
                 }
                 else MessageBox.Show("Le mot de passe actuel est éronnée");

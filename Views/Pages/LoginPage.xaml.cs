@@ -102,9 +102,10 @@ namespace GameOn.Views.Pages
                     ConnectionSingleton.UserConnected = user;
                     MainWindowVM.Instance.CurrentPage = new LandingPage();
                 }
-                else MessageBox.Show("Le mot de passe est eronné");
+                else MessageBox.Show("Le mot de passe est eronné"); password.Password = string.Empty;
+
             }
-            else MessageBox.Show("Le login donné n'existe pas");
+            else MessageBox.Show("Le login donné n'existe pas"); password.Password = string.Empty;
         }
 
         private bool CanConnexion(object parameter)

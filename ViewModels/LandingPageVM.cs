@@ -1,4 +1,5 @@
-﻿using GameOn.Views.Pages;
+﻿using GameOn.DataAccesLayer;
+using GameOn.Views.Pages;
 using GameOn.Views.Windows;
 using System;
 using System.Collections.Generic;
@@ -66,7 +67,8 @@ namespace GameOn.ViewModels
 
         private void ExecuteLogOut(object parameter)
         {
-            
+            ConnectionSingleton.UserConnected = null;
+            MainWindowVM.Instance.CurrentPage = new LoginPage();
         }
 
 

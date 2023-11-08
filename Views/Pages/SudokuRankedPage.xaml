@@ -292,7 +292,7 @@
     <Canvas Margin="0">
 
 
-        <Image Source="\Img\Jeu.png" Width="800"></Image>
+        <Image Source="\Img\Jeu.png"></Image>
 
 
 
