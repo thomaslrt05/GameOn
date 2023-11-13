@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GameOn.DataAccesLayer;
 using GameOn.ViewModels;
+using GameOn.Models;
 
 namespace GameOn.Views.Pages
 {
@@ -24,7 +26,33 @@ namespace GameOn.Views.Pages
         public SudokuScoreboardPage()
         {
             InitializeComponent();
-            //this.DataContext = new SudokuPracticePageVM();
+            LoadScoreboard();
+        }
+
+        public void LoadScoreboard()
+        {
+            try
+            {
+                DAL dal = new DAL();
+                List<User>? usersList = dal.UserFact.GetAllUser();
+                List<UserViewModel> dataList = new List<UserViewModel>();
+                int points = 0;
+                foreach (User user in usersList)
+                {
+                    points = dal.UserFact.GetAllPointOfUser(user);
+                    dataList.Add(new UserViewModel(user, points));
+                }
+                dataGrid.ItemsSource = dataList;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Une erreur est survenue lors du chargement du scoreboard");
+            }
+        }
+
+        private void BackToLandingPage(object sender, RoutedEventArgs e)
+        {
+            MainWindowVM.Instance.CurrentPage = new LandingPage();
         }
     }
 }
