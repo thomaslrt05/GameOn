@@ -1,5 +1,7 @@
 ﻿using GameOn.Models;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 
 namespace GameOn.DataAccesLayer.Factories
 {
@@ -156,6 +158,70 @@ namespace GameOn.DataAccesLayer.Factories
 
             
         }
+
+        public int GetAllPointOfUser(User user)
+        {
+            MySqlConnection? mySqlCnn = null;
+            MySqlDataReader? mySqlDataReader = null;
+            int totalPoints = 0;
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT SUM(PointWon) " +
+                                        "FROM sudokuparticipation " +
+                                        "WHERE User_Id = @Id ";
+                                        
+                mySqlCmd.Parameters.AddWithValue("@id", user.Id);
+                mySqlDataReader = mySqlCmd.ExecuteReader();
+                if (mySqlDataReader.Read())
+                {
+                    totalPoints =  mySqlDataReader.GetInt32(0);
+                }
+            }
+            finally
+            {
+                mySqlDataReader?.Close();
+                mySqlCnn?.Close();
+            }
+            return totalPoints;
+        }
+
+
+        public List<User>? GetAllUser()
+        {
+            List<User>? users = null;
+            MySqlConnection? mySqlCnn = null;
+            MySqlDataReader? mySqlDataReader = null;
+
+            try
+            {
+                users = new List<User>(); // Initialisez la liste ici
+
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT * FROM user";
+
+                mySqlDataReader = mySqlCmd.ExecuteReader();
+                while (mySqlDataReader.Read())
+                {
+                    users.Add(CreateFromReader(mySqlDataReader));
+                }
+            }
+            finally
+            {
+                mySqlDataReader?.Close();
+                mySqlCnn?.Close();
+            }
+
+            return users;
+        }
+
+
+
         public UserFactory() { }
 
 

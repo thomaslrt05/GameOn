@@ -11,6 +11,48 @@
       Title="SudokuScoreboardPage">
 
     <Grid>
-        
+
+        <Frame x:Name="LandingFrame"></Frame>
+
+        <Image Source="/img/Jeu.png" Stretch="UniformToFill"></Image>
+
+        <Grid VerticalAlignment="Top" Height="100">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label Content="Générale" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40"></Label>
+            <Label Content="Semaine" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40"></Label>
+        </Grid>
+
+        <Grid VerticalAlignment="Center" Margin="20" Height="280">
+            <ScrollViewer VerticalScrollBarVisibility="Disabled">
+                <DataGrid Name="dataGrid" AutoGenerateColumns="False" Background="Transparent" HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="*" Header="Nom" Binding="{Binding Utilisateur.LastName}"/>
+                        <DataGridTextColumn Width="*" Header="Prénom" Binding="{Binding Utilisateur.Name}"/>
+                        <DataGridTextColumn Width="*" Header="Département" Binding="{Binding Utilisateur.Departement.Name}"/>
+                        <DataGridTextColumn Width="*" Header="Total points" Binding="{Binding Points}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </ScrollViewer>
+        </Grid>
+
+
+        <Grid VerticalAlignment="Bottom" Height="80">
+            <Button Width="150" Height="50" Content="Retour au menu" Click="BackToLandingPage"></Button>
+        </Grid>
+
     </Grid>
 </Page>
