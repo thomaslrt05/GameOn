@@ -22,6 +22,8 @@ using System.Windows.Threading;
 using Newtonsoft.Json;
 using Google.Protobuf.WellKnownTypes;
 using System.ComponentModel;
+using System.Reflection;
+using System.Windows.Controls.Primitives;
 
 namespace GameOn.Views.Pages
 {
@@ -74,8 +76,6 @@ namespace GameOn.Views.Pages
             TimerGame.Content = gameTime.ToString(@"hh\:mm\:ss");
 
         }
-
-
         private async Task LoadTimerRemain() 
         {
             gameTimerRemain = new DispatcherTimer();
@@ -129,31 +129,32 @@ namespace GameOn.Views.Pages
                     dal.SudokuParticipationFact.Save(SudokuParticipation);
                 }
 
-                //transformer la participation en gameLogic
-
                 if(_SudokuModel == null)
                 {
                     _SudokuModel = dal.SudokuFactory.GetGameOfTheDay();
                 }
+
+                //transformer la participation en gameLogic
                 _SudokuLogic = SudokuLogic.SudokuParticipationToLogic(SudokuParticipation);
 
                 //ouvrire la fenetre avec les données du gameParticipation
-                for (int i = 0; i < 9; i++)
+                for (int iLogicRow = 0; iLogicRow < 9; iLogicRow++)
                 {
-                    for (int j = 0; j < 9; j++)
+                    for (int iLogicCol = 0; iLogicCol < 9; iLogicCol++)
                     {
-                        TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
-                        SudokuCell cellValue = _SudokuLogic.Grid[i, j];
+                        TextBox textBox = (TextBox)this.FindName($"text{iLogicRow}{iLogicCol}");
+                        SudokuCell cellValue = _SudokuLogic.Grid[iLogicRow, iLogicCol];
 
                         textBox.Text = cellValue.Value != 0 ? cellValue.Value.ToString() : "";
                         textBox.IsReadOnly = !cellValue.IsEditable;
                         textBox.Tag = cellValue.IsNote.ToString();
+                        // si c'est une note crée la grille pour les notes
                         if(cellValue.IsNote)
                         {
-                            textBox.Background = Brushes.Red;
+                            CreateNote(textBox,iLogicRow,iLogicCol);
                         }
-                        
                     }
+
                 }
                 
             }
@@ -163,20 +164,92 @@ namespace GameOn.Views.Pages
             }
         }
 
+        private void CreateNote(TextBox textBox,int iLogicRow, int iLogicCol)
+        {
+            //Cherche sur la quel des 9 sous grilles la notes doit etre mise 
+            Grid parentGrid = (Grid)textBox.Parent;
+            
+            int viewRow = Grid.GetRow(textBox);
+            int viewCol = Grid.GetColumn(textBox);
+
+            // Créez une nouvelle Grid de 3x3
+            Grid newGrid = new Grid();
+
+            for (int a = 0; a < 3; a++)
+            {
+                newGrid.RowDefinitions.Add(new RowDefinition());
+                newGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+
+            string textBoxName = textBox.Name;
+            //on donne un nom a la grille pour pouvoir la retrouver quand on enregistera la game
+            newGrid.Name = $"notegrid{iLogicRow}{iLogicCol}";
+            this.RegisterName(newGrid.Name, newGrid);
+
+            this.UnregisterName(textBoxName);
+
+            // Ajoutez la nouvelle Grid au parentGrid
+            parentGrid.Children.Add(newGrid);
+            
+            // Ajoutez la nouvelle Grid au parentGrid en spécifiant la position de row et col
+            Grid.SetRow(newGrid, viewRow);
+            Grid.SetColumn(newGrid, viewCol);
+
+            // Ajoutez des TextBox à la nouvelle Grid 
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    TextBox newTextBox = new TextBox();
+                    newTextBox.Text = _SudokuLogic.Grid[iLogicRow, iLogicCol].Notes[i, j].ToString();
+                    Grid.SetRow(newTextBox, i);
+                    Grid.SetColumn(newTextBox, j);
+                    newTextBox.HorizontalContentAlignment = HorizontalAlignment.Center;
+                    newTextBox.VerticalContentAlignment = VerticalAlignment.Center;
+                    newTextBox.PreviewMouseDown += Notes_Click;
+                    newTextBox.TextChanged += TextBox_TextChanged;
+                    newGrid.Children.Add(newTextBox);
+
+                }
+            }
+            //on enleve la textbox de la grille
+            parentGrid.Children.Remove(textBox);
+        }
         public void SaveGame(object sender, RoutedEventArgs e)
         {
             //Actualiser la grille de gameLogic avec tout les chiffres de la vue
             for (int i = 0; i < 9; i++)
             {
-                for (int j = 0; j < 9; j++)
+                for (int j = 0; j < 9; j++) 
                 {
+                    //on cherche la case au coordonée i j
                     TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
-
-                    _SudokuLogic.Grid[i, j] = new SudokuCell { 
-                        IsEditable = !textBox.IsReadOnly, 
-                        IsNote = bool.Parse(textBox.Tag as string), 
-                        Value = int.Parse(textBox.Text != "" ? textBox.Text : "0")
-                    };
+                    if(textBox!=null)
+                    {
+                        _SudokuLogic.Grid[i, j] = new SudokuCell
+                        {
+                            IsEditable = !textBox.IsReadOnly,
+                            IsNote = bool.Parse(textBox.Tag as string),
+                            Value = int.Parse(textBox.Text != "" ? textBox.Text : "0")
+                        };
+                    }
+                    else
+                    {
+                        //si on ne trouve pas de textbox a ces coordonées c'est qu'il s'agit d'une note, et donc d'une grille
+                        Grid grid = (Grid)this.FindName($"notegrid{i}{j}");
+                        _SudokuLogic.Grid[i, j] = new SudokuCell
+                        {
+                            IsEditable = true,
+                            IsNote = true,
+                            Value = 0
+                        };
+                        foreach (TextBox element in grid.Children)
+                        {
+                            int noteRow = Grid.GetRow(element);
+                            int noteCol = Grid.GetColumn(element);
+                            _SudokuLogic.Grid[i, j].Notes[noteRow, noteCol] = int.Parse(element.Text); 
+                        }
+                    }
 
                 }
             }
@@ -186,20 +259,78 @@ namespace GameOn.Views.Pages
 
         }
 
+        //transforme un text box en grid pour les notes multiples
+        private void Notes_Click(object sender, RoutedEventArgs e)
+        {
+            if(!NoteEnabled)
+            {
+                TextBox textBoxClicked = (TextBox)sender;
+                Grid noteGrid = (Grid)textBoxClicked.Parent;
+                Grid parentGrid = (Grid)noteGrid.Parent;
+
+                int viewRow = Grid.GetRow(noteGrid);
+                int viewCol = Grid.GetColumn(noteGrid);
+                int logicRow = int.Parse(noteGrid.Name[8].ToString());
+                int logicCol = int.Parse(noteGrid.Name[9].ToString());
+                TextBox newTextBox = new TextBox();
+
+                string gridName = noteGrid.Name;
+                newTextBox.Text = "";
+                newTextBox.FontSize = 30;
+                newTextBox.Name = $"text{logicRow}{logicCol}";
+
+                this.RegisterName(newTextBox.Name, newTextBox);
+
+                this.UnregisterName(gridName);
+                // Ajoutez la nouvelle Grid au parentGrid
+                parentGrid.Children.Add(newTextBox);
+
+                // Ajoutez la nouvelle Grid au parentGrid en spécifiant la position de row et col
+                Grid.SetRow(newTextBox, viewRow);
+                Grid.SetColumn(newTextBox, viewCol);
+
+                newTextBox.HorizontalContentAlignment = HorizontalAlignment.Center;
+                newTextBox.VerticalContentAlignment = VerticalAlignment.Center;
+                newTextBox.PreviewMouseDown += Notes_Click;
+                newTextBox.TextChanged += TextBox_TextChanged;
+                newTextBox.Tag = "false";
+                newTextBox.IsReadOnly = false;
+
+                if (ShouldSetBackgroundWhite(parentGrid))
+                {
+                    newTextBox.Background = Brushes.White;
+                }
+                else
+                {
+                    newTextBox.Background = Brushes.LightBlue;
+                }
+
+                parentGrid.Children.Remove(noteGrid);
+
+
+            }
+        }
+
+        private void TextBox_Click(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (NoteEnabled && !textBox.IsReadOnly)
+            {                
+                int logicRow = int.Parse(textBox.Name[4].ToString());
+                int logicCol = int.Parse(textBox.Name[5].ToString());
+                CreateNote(textBox,logicRow,logicCol);
+
+            }
+        }
         private void TextBox_TextChanged(object sender, TextChangedEventArgs args)
         {
-            // Code à exécuter lorsque le texte dans la TextBox change
             TextBox textBox = (TextBox)sender;
             string newText = textBox.Text;
             textBox.Tag = NoteEnabled.ToString();
 
             Grid parentGrid = (Grid)textBox.Parent;
 
-            if (NoteEnabled)
-            {
-                textBox.Background = Brushes.Red;
-            }
-            else
+            if(!NoteEnabled)
             {
                 if (ShouldSetBackgroundWhite(parentGrid))
                 {
@@ -224,7 +355,6 @@ namespace GameOn.Views.Pages
         {
             return int.TryParse(text, out value);
         }
-
         private bool IsInRange(int value, int min, int max)
         {
             return value >= min && value <= max;
