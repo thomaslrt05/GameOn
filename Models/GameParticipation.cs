@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameOn.ViewModels
+namespace GameOn.Models
 {
-    class SudokuScoreboardVM
+    public class GameParticipation
     {
     }
 }

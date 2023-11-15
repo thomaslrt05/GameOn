@@ -9,14 +9,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GameOn.Models.Game;
+using GameOn.Views.Pages;
 
 namespace GameOn.ViewModels
 {
     class SudokuRankedPageVM : INotifyPropertyChanged
     {
-        SudokuLogic sudoku { get; set; }
-        public List<List<SudokuCell>> SudokuGrid { get; set; }
-
 
         #region Inotify
         // Obligatoire par l'implémentation de l'interface INotifyPropertyChanged
@@ -55,8 +53,7 @@ namespace GameOn.ViewModels
        
         private void ExecuteBackToMenuButton(object parameter)
         {
-            MainWindowVM mainWindowVM = MainWindowVM.Instance;
-            Instance.CurrentPage = new LandingPage();
+            MainWindowVM.Instance.CurrentPage = new SudokuMainPage();
         }
 
         private bool CanExecute(object parameter)
