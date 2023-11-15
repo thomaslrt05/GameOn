@@ -29,17 +29,29 @@ namespace GameOn.Models
             Difficulty = difficulty;
         }
 
-        public static async Task<Sudoku> CreateSudoku()
+        public static async Task<Sudoku> CreateSudoku(bool isRanked = true)
         {
             String content = await GetNewSudoku();
 
             JObject jsonObject = JObject.Parse(content);
             JArray grid = (JArray)jsonObject["newboard"]["grids"][0]["value"];
-            JArray gridSolution = (JArray)jsonObject["newboard"]["grids"][0]["solution"];
+            string difficulty = jsonObject["newboard"]["grids"][0]["difficulty"].ToString(); // Accédez à l'élément 0 pour obtenir la difficulté
+            
+            JArray gridSolution = (JArray)jsonObject["newboard"]["grids"][0 ]["solution"];
 
-            Sudoku sudoku = new Sudoku(0, DateTime.Today, grid.ToString(), gridSolution.ToString(), true, 1);
+            Sudoku sudoku = new Sudoku(0, DateTime.Today, grid.ToString(), gridSolution.ToString(), isRanked, CheckDifficulty(difficulty));
             return sudoku;
         }
+        public static async Task<Sudoku> CreateSudoku(bool isRanked, int difficulty)
+        {
+            Sudoku s;
+            do
+            {
+                s = await CreateSudoku(isRanked);
+            }while (s.Difficulty != difficulty);
+            return s;
+        }
+
         static async Task<string> GetNewSudoku()
         {
             string url = "https://sudoku-api.vercel.app/api/dosuku";
@@ -49,6 +61,19 @@ namespace GameOn.Models
 
             return content;
         }
+
+        private static int CheckDifficulty(string difficulty)
+        {
+            switch (difficulty)
+            {
+                case "Easy":
+                    return 1;
+                case "Medium":
+                    return 2;
+                default: 
+                    return 3;
+            }
+        } 
 
     }
 
