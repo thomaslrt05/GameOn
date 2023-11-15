@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,7 +42,6 @@ namespace GameOn.DataAccesLayer.Factories
             return participation;
         }
 
-
         public SudokuParticipation? GetTodayParticipationOfUser(int userId)
         {
             DateTime date = DateTime.Today;
@@ -52,8 +52,12 @@ namespace GameOn.DataAccesLayer.Factories
                 mySqlCnn.Open();
 
                 MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
-                mySqlCmd.CommandText = "SELECT * FROM sudokuparticipation " +
-                                       "WHERE User_Id = @UserId AND DATE(StartDate) = @Date";
+                mySqlCmd.CommandText = "SELECT sp.* " +
+                                        "FROM sudokuparticipation sp " +
+                                        "INNER JOIN sudoku s ON sp.sudoku = s.id " +
+                                        "WHERE sp.user_id = @UserId " +
+                                        "AND DATE(sp.startDate) = @Date " +
+                                        "AND s.isRanked = 1";
                 mySqlCmd.Parameters.AddWithValue("@UserId", userId);
                 mySqlCmd.Parameters.AddWithValue("@Date", date.Date);
 
@@ -73,7 +77,6 @@ namespace GameOn.DataAccesLayer.Factories
             // Si aucune participation n'est trouvée, retournez null ou une valeur par défaut.
             return null;
         }
-
 
         public void Save(SudokuParticipation participation)
         {
