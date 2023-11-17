@@ -28,7 +28,7 @@ namespace GameOn.Models
             IsRanked = isRanked;
             Difficulty = difficulty;
         }
-        //test
+        
         public static async Task<Sudoku> CreateSudoku(bool isRanked = true)
         {
             String content = await GetNewSudoku();

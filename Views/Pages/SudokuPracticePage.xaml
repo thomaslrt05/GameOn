@@ -1,14 +1,632 @@
-﻿<Page x:Class="GameOn.Views.Pages.SudokuPracticePage"
+﻿<Page x:Class="GameOn.Views.Pages.SudokuPracticePage "
+      xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:GameOn.Views.Pages"
+      xmlns:ViewModels="clr-namespace:GameOn.ViewModels"
+      d:DataContext="{d:DesignInstance Type=ViewModels:SudokuPracticePageVM}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="SudokuPracticePage">
+      Unloaded="SaveGame"
+      Title="SudokuPRacticePage">
 
-    <Grid>
-        
-    </Grid>
+    <Page.Resources>
+
+        <Style x:Key="BorderStyle"
+           TargetType="Border">
+            <Setter Property="BorderBrush" Value="Gray" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <Style x:Key="MiniBorderStyle"
+           TargetType="Border"
+           BasedOn="{StaticResource BorderStyle}">
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Grid.ColumnSpan" Value="3" />
+            <Setter Property="Grid.RowSpan" Value="3" />
+            <Setter Property="Height" Value="134" />
+            <Setter Property="Width" Value="134" />
+        </Style>
+
+        <Style x:Key="MiniBorderBlueStyle"
+           TargetType="Border"
+           BasedOn="{StaticResource MiniBorderStyle}">
+            <Setter Property="Background" Value="AliceBlue" />
+        </Style>
+
+        <Style TargetType="TextBox" x:Key="BlueTextBlock">
+            <Setter Property="Background" Value="LightBlue" />
+        </Style>
+
+        <Style x:Key="BarBaseStyle"
+           TargetType="Rectangle">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="0,0,0,0" />
+            <Setter Property="Stroke" Value="Gray" />
+        </Style>
+
+        <Style x:Key="HorizontalBars"
+           TargetType="Rectangle"
+           BasedOn="{StaticResource BarBaseStyle}">
+            <Setter Property="Grid.ColumnSpan" Value="3"/>
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Width" Value="134" />
+        </Style>
+
+        <Style x:Key="VerticalBars"
+           TargetType="Rectangle"
+           BasedOn="{StaticResource BarBaseStyle}">
+            <Setter Property="Grid.RowSpan" Value="3"/>
+            <Setter Property="Height" Value="134"/>
+            <Setter Property="Width" Value="1" />
+        </Style>
+
+
+        <Style x:Key="GameGridStyle"
+           TargetType="Grid">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="10,10,0,0" />
+            <Setter Property="Height" Value="402" />
+            <Setter Property="Width" Value="402" />
+            <Setter Property="Panel.ZIndex" Value="2" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsShowGameGrid, Mode=OneWay}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsShowGameGrid, Mode=OneWay}" Value="False">
+                    <Setter Property="Visibility" Value="Hidden" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+
+        <Style x:Key="ButtonStyleBlue" TargetType="Button">
+            <Setter Property="Height" Value="43"/>
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Width" Value="43" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="LightBlue" />
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="IsEnabled" Value="True" />
+            <Setter Property="Visibility" Value="Visible" />
+            <Setter Property="Grid.Row" Value="0" />
+            <Setter Property="Grid.Column" Value="0" />
+            <Setter Property="Grid.ColumnSpan" Value="3" />
+            <Setter Property="Grid.RowSpan" Value="3" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseDirectlyOver" Value="True">
+                    <Setter Property="Background" Value="LightBlue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ButtonStyleWhite" TargetType="Button">
+            <Setter Property="Height" Value="43"/>
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Width" Value="43" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="LightBlue" />
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="IsEnabled" Value="True" />
+            <Setter Property="Visibility" Value="Visible" />
+            <Setter Property="Grid.Row" Value="0" />
+            <Setter Property="Grid.Column" Value="0" />
+            <Setter Property="Grid.ColumnSpan" Value="3" />
+            <Setter Property="Grid.RowSpan" Value="3" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseDirectlyOver" Value="True">
+                    <Setter Property="Background" Value="White" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CellStyle"
+           TargetType="TextBlock">
+            <Setter Property="Height" Value="39"/>
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Width" Value="34" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="IsEnabled" Value="True" />
+            <Setter Property="Visibility" Value="Visible" />
+            <Setter Property="Grid.Row" Value="0" />
+            <Setter Property="Grid.Column" Value="0" />
+            <Setter Property="Grid.ColumnSpan" Value="3" />
+            <Setter Property="Grid.RowSpan" Value="3" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseDirectlyOver" Value="True">
+                    <Setter Property="Background" Value="LightBlue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="43"/>
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Width" Value="43" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Foreground" Value="Black" />
+
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="IsEnabled" Value="True" />
+            <Setter Property="Visibility" Value="Visible" />
+            <Setter Property="Grid.Row" Value="0" />
+            <Setter Property="Grid.Column" Value="0" />
+            <Setter Property="Grid.ColumnSpan" Value="3" />
+            <Setter Property="Grid.RowSpan" Value="3" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseDirectlyOver" Value="True">
+                    <Setter Property="Background" Value="LightBlue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="NoteCellStyle"
+           TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="9" />
+            <Setter Property="Visibility" Value="Hidden" />
+            <Setter Property="Foreground" Value="Black" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseDirectlyOver" Value="True">
+                    <Setter Property="Background" Value="LightBlue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="CellDataTemplate">
+            <Grid x:Name="CellGrid"
+              Margin="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="Cell" 
+                       Style="{StaticResource CellStyle}"/>
+                <TextBlock x:Name="Note1"
+                       Text="{Binding Path=Notes[0].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="0"
+                       Grid.Row="0"/>
+                <TextBlock x:Name="Note2"
+                       Text="{Binding Path=Notes[1].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="1"
+                       Grid.Row="0"/>
+                <TextBlock x:Name="Note3"
+                       Text="{Binding Path=Notes[2].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="2"
+                       Grid.Row="0"/>
+                <TextBlock x:Name="Note4"
+                       Text="{Binding Path=Notes[3].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="0"
+                       Grid.Row="1"/>
+                <TextBlock x:Name="Note5"
+                       Text="{Binding Path=Notes[4].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="1"
+                       Grid.Row="1"/>
+                <TextBlock x:Name="Note6"
+                       Text="{Binding Path=Notes[5].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="2"
+                       Grid.Row="1"/>
+                <TextBlock x:Name="Note7"
+                       Text="{Binding Path=Notes[6].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="0"
+                       Grid.Row="2"/>
+                <TextBlock x:Name="Note8"
+                       Text="{Binding Path=Notes[7].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="1"
+                       Grid.Row="2"/>
+                <TextBlock x:Name="Note9"
+                       Text="{Binding Path=Notes[8].Value, Mode=OneWay}"
+                       Style="{StaticResource NoteCellStyle}"
+                       Grid.Column="2"
+                       Grid.Row="2"/>
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=CellState}" Value="Answer">
+                    <Setter Property="Text" Value="{Binding Path=Answer, Mode=OneWay}" TargetName="Cell"/>
+                    <Setter Property="IsEnabled" Value="False" TargetName="Cell"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CellState}" Value="Hint">
+                    <Setter Property="Text" Value="{Binding Path=Answer, Mode=OneWay}" TargetName="Cell"/>
+                    <Setter Property="Foreground" Value="BlueViolet" TargetName="Cell"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CellState}" Value="Blank">
+                    <Setter Property="Text" Value=" " TargetName="Cell"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CellState}" Value="UserInputCorrect" >
+                    <Setter Property="Text" Value="{Binding Path=UserAnswer, Mode=OneWay}" TargetName="Cell"/>
+                    <Setter Property="Foreground" Value="DarkGreen" TargetName="Cell"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CellState}" Value="UserInputIncorrect" >
+                    <Setter Property="Text" Value="{Binding Path=UserAnswer, Mode=OneWay}" TargetName="Cell"/>
+                    <Setter Property="Foreground" Value="DarkRed" TargetName="Cell"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=CellState}" Value="Notes">
+                    <Setter Property="Margin" Value="5" TargetName="CellGrid" />
+                    <Setter Property="Visibility" Value="Hidden" TargetName="Cell" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note1" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note2" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note3" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note4" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note5" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note6" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note7" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note8" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="Note9" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+    </Page.Resources>
+
+
+    <Canvas Margin="0">
+
+
+        <Image Source="\Img\Jeu.png"></Image>
+
+
+
+        <Grid Style="{StaticResource GameGridStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0"
+              Grid.Column="0" Name="grid0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderBlueStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1"/>
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+
+                <TextBox Name="text00" Grid.Column="0" Grid.Row="0"  Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text01" Grid.Column="1" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text02" Grid.Column="2" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text10" Grid.Column="0" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text11" Grid.Column="1" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text12" Grid.Column="2" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text20" Grid.Column="0" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text21" Grid.Column="1" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text22" Grid.Column="2" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+
+            </Grid>
+
+            <Grid Grid.Row="0"
+              Grid.Column="1" Name="grid1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="44.667"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1"/>
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+                <TextBox Name="text03" Grid.Column="0" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text04" Grid.Column="1" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text05" Grid.Column="2" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text13" Grid.Column="0" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text14" Grid.Column="1" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text15" Grid.Column="2" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text23" Grid.Column="0" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text24" Grid.Column="1" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text25" Grid.Column="2" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+            </Grid>
+
+            <Grid Grid.Row="0"
+              Grid.Column="2" Name="grid2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderBlueStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1"/>
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+                <TextBox Name="text06" Grid.Column="0" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text07" Grid.Column="1" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text08" Grid.Column="2" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text16" Grid.Column="0" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text17" Grid.Column="1" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text18" Grid.Column="2" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text26" Grid.Column="0" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text27" Grid.Column="1" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text28" Grid.Column="2" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+            </Grid>
+
+            <Grid Grid.Row="1"
+              Grid.Column="0" Name="grid3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1"/>
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+                <TextBox Name="text30" Grid.Column="0" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text31" Grid.Column="1" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text32" Grid.Column="2" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text40" Grid.Column="0" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text41" Grid.Column="1" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text42" Grid.Column="2" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text50" Grid.Column="0" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text51" Grid.Column="1" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text52" Grid.Column="2" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+            </Grid>
+
+            <Grid Grid.Row="1"
+              Grid.Column="1" Name="grid4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderBlueStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+                <TextBox Name="text33" Grid.Column="0" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text34" Grid.Column="1" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text35" Grid.Column="2" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text43" Grid.Column="0" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text44" Grid.Column="1" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text45" Grid.Column="2" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text53" Grid.Column="0" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text54" Grid.Column="1" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text55" Grid.Column="2" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+            </Grid>
+
+            <Grid Grid.Row="1"
+              Grid.Column="2" Name="grid5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1"/>
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+                <TextBox Name="text36" Grid.Column="0" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text37" Grid.Column="1" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text38" Grid.Column="2" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text46" Grid.Column="0" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text47" Grid.Column="1" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text48" Grid.Column="2" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text56" Grid.Column="0" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text57" Grid.Column="1" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text58" Grid.Column="2" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+            </Grid>
+
+            <Grid Grid.Row="2"
+              Grid.Column="0" Name="grid6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderBlueStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1"/>
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+                <TextBox Name="text60" Grid.Column="0" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text61" Grid.Column="1" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text62" Grid.Column="2" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text70" Grid.Column="0" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text71" Grid.Column="1" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text72" Grid.Column="2" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text80" Grid.Column="0" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text81" Grid.Column="1" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text82" Grid.Column="2" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+            </Grid>
+
+            <Grid Grid.Row="2"
+              Grid.Column="1" Name="grid7">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1"/>
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+                <TextBox Name="text63" Grid.Column="0" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text64" Grid.Column="1" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text65" Grid.Column="2" Grid.Row="0" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text73" Grid.Column="0" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text74" Grid.Column="1" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text75" Grid.Column="2" Grid.Row="1" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text83" Grid.Column="0" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text84" Grid.Column="1" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text85" Grid.Column="2" Grid.Row="2" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+            </Grid>
+
+            <Grid Grid.Row="2"
+              Grid.Column="2" Name="grid8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource MiniBorderBlueStyle}" />
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="1"/>
+                <Rectangle Style="{StaticResource HorizontalBars}" Grid.Row="2"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="1"/>
+                <Rectangle Style="{StaticResource VerticalBars}" Grid.Column="2"/>
+
+                <TextBox Name="text66" Grid.Column="0" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text67" Grid.Column="1" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text68" Grid.Column="2" Grid.Row="0" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text76" Grid.Column="0" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text77" Grid.Column="1" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text78" Grid.Column="2" Grid.Row="1" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+
+                <TextBox Name="text86" Grid.Column="0" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text87" Grid.Column="1" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                <TextBox Name="text88" Grid.Column="2" Grid.Row="2" Style="{StaticResource BlueTextBlock}" FontSize="30" PreviewMouseDown="TextBox_Click" TextChanged="TextBox_TextChanged" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+            </Grid>
+
+        </Grid>
+
+        <Grid HorizontalAlignment="Left" Height="320" Width="324" VerticalAlignment="Top" Canvas.Left="453" Canvas.Top="65">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label Content="Temps de jeu" Grid.Row="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+            <Label x:Name="TimerGame" Grid.Row="1" Grid.Column="1" FontSize="35" HorizontalAlignment="Center" VerticalAlignment="Center" Content="00:00:00" />
+
+            <Button Width="100" Height="50" Grid.Row="2" Content="Nouvelle grille" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
+            <Button Width="100" Height="50" Grid.Row="2" Grid.Column="1" Command="{Binding ChangePageCommand}" Content="Retour au menu" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
+        </Grid>
+
+
+
+        <StackPanel HorizontalAlignment="Left" Height="80" Width="136" VerticalAlignment="Top" Canvas.Left="427" Canvas.Top="10">
+            <Label FontWeight="Bold">Options</Label>
+            <CheckBox Checked="CheckNotes" Unchecked="UnCheckNotes">Activer notes</CheckBox>
+
+        </StackPanel>
+    </Canvas>
+
+
 </Page>
