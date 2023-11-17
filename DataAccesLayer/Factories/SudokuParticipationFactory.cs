@@ -78,6 +78,42 @@ namespace GameOn.DataAccesLayer.Factories
             return null;
         }
 
+        public SudokuParticipation? GetLastUnrankedSudokuOfUser(int userId, int difficulty)
+        {
+            MySqlConnection? mySqlCnn = null;
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT sp.* " +
+                                        "FROM sudokuparticipation sp " +
+                                        "INNER JOIN sudoku s ON sp.sudoku = s.id " +
+                                        "WHERE sp.user_id = @UserId " +
+                                        "AND s.isRanked = 0 " +
+                                        "AND s.difficulty = @Difficulty " +
+                                        "ORDER BY sp.startDate DESC " +
+                                        "LIMIT 1";
+                mySqlCmd.Parameters.AddWithValue("@UserId", userId);
+                mySqlCmd.Parameters.AddWithValue("@Difficulty", difficulty);
+
+                using (MySqlDataReader reader = mySqlCmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return CreateFromReader(reader);
+                    }
+                }
+            }
+            finally
+            {
+                mySqlCnn?.Close();
+            }
+
+            // Si aucun sudoku non classé n'est trouvé, retournez null ou une valeur par défaut.
+            return null;
+        }
         public void Save(SudokuParticipation participation)
         {
             MySqlConnection? mySqlCnn = null;
