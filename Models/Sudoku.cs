@@ -28,48 +28,28 @@ namespace GameOn.Models
             IsRanked = isRanked;
             Difficulty = difficulty;
         }
-        public static async Task<Sudoku> CreateSudoku(bool isRanked = true)
+        public static async Task<Sudoku> CreateSudoku(bool isRanked = true, int  difficulty = 1 )
         {
-            String content = await GetNewSudoku();
+            String content = await GetNewSudoku(difficulty);
 
             JObject jsonObject = JObject.Parse(content);
             JArray grid = (JArray)jsonObject["newboard"]["grids"][0]["value"];
-            string difficulty = jsonObject["newboard"]["grids"][0]["difficulty"].ToString(); // Accédez à l'élément 0 pour obtenir la difficulté
+            //string difficulty = jsonObject["newboard"]["grids"][0]["difficulty"].ToString(); // Accédez à l'élément 0 pour obtenir la difficulté
             
             JArray gridSolution = (JArray)jsonObject["newboard"]["grids"][0 ]["solution"];
 
-            Sudoku sudoku = new Sudoku(0, DateTime.Today, grid.ToString(), gridSolution.ToString(), isRanked, CheckDifficulty(difficulty));
+            Sudoku sudoku = new Sudoku(0, DateTime.Today, grid.ToString(), gridSolution.ToString(), isRanked, difficulty);
             return sudoku;
         }
-        public static async Task<Sudoku> CreateSudoku(bool isRanked, int difficulty)
+
+        private static async Task<string> GetNewSudoku(int difficulty)
         {
-            Sudoku s;
-            do
-            {
-                s = await CreateSudoku(isRanked);
-            }while (s.Difficulty != difficulty);
-            return s;
-        }
-        private static async Task<string> GetNewSudoku()
-        {
-            string url = "https://sudoku-api.vercel.app/api/dosuku";
+            string url = $"https://sudoku-api.vercel.app/api/dosuku?query:difficulty={difficulty}";
 
             HttpClient client = new HttpClient();
             string content = await client.GetStringAsync(url);
 
             return content;
-        }
-        private static int CheckDifficulty(string difficulty)
-        {
-            switch (difficulty)
-            {
-                case "Easy":
-                    return 1;
-                case "Medium":
-                    return 2;
-                default: 
-                    return 3;
-            }
         }
 
     }

@@ -79,8 +79,13 @@ namespace GameOn.Models.Game
             if(IsWin())
             {
                 sudokuParticipation.EndDate = DateTime.Now;
-                GivePoints(sudokuParticipation);
                 MessageBox.Show("Win !");
+                if(IsRanked)
+                {
+                    GivePoints(sudokuParticipation);
+                    Notification notification = new Notification(0, $"Félicitation vous avez gagné {sudokuParticipation.PointWon} points", false, sudokuParticipation.UserId);
+                    new DAL().NotifFactory.Save(notification);
+                }
             }
             new DAL().SudokuParticipationFact.Save(sudokuParticipation);
 
@@ -301,6 +306,27 @@ namespace GameOn.Models.Game
                 default:
                     sudokuParticipation.PointWon = 1;
                     break;
+            }
+
+        }
+        public void ClearGrid()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    TextBox textBox = (TextBox)SudokuPage.FindName($"text{i}{j}");
+                    if (textBox != null)
+                    {
+                        textBox.Text = "";
+                    }
+                    else
+                    {
+                        Grid grid = (Grid)SudokuPage.FindName($"notegrid{i}{j}");
+                        this.CreateTextBox(grid);
+                    }
+
+                }
             }
         }
 

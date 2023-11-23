@@ -164,6 +164,16 @@ namespace GameOn.Views.Pages
         {
             _SudokuLogic.SaveGame(this, _SudokuParticipation);
         }
+        private async void ResetGrid(object sender, RoutedEventArgs e)
+        {
+            //on supprime tout ce qui est sur la grille
+            _SudokuLogic.ClearGrid();
+            //et on remet la grille de base du model 
+            _SudokuParticipation.ActualGrid = SudokuParticipation.ModelGridToParticipationGrid(_SudokuModel.Grid);
+            new DAL().SudokuParticipationFact.Save(_SudokuParticipation);
+            await InitPage();
+        }
+
         //transforme un text box en grid pour les notes multiples
         private void Notes_Click(object sender, RoutedEventArgs e)
         {

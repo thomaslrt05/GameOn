@@ -169,32 +169,31 @@ namespace GameOn.Views.Pages
         private async void NewGrid(object sender, RoutedEventArgs e)
         {
             ClearGrid();
-            //crée nouveau sudoku
-            //y assigner la participation
+            gameTimer.Stop();
+            DAL dal = new DAL();
+            _SudokuModel = await Sudoku.CreateSudoku(isRanked: false, Difficulty); ;
+            dal.SudokuFactory.Save(_SudokuModel);
+
+            //creé le sudokuParaticipation pour ce user et ce sudoku
+            _SudokuParticipation = new SudokuParticipation()
+            {
+                StartDate = DateTime.Now,
+                Id = 0,
+                SudokuId = _SudokuModel.Id,
+                PointWon = 0,
+                UserId = ConnectionSingleton.UserConnected.Id,
+                //crée la grille a partir du model
+                ActualGrid = SudokuParticipation.ModelGridToParticipationGrid(_SudokuModel.Grid)
+            };
+
+            dal.SudokuParticipationFact.Save(_SudokuParticipation);
+            _SudokuLogic = _SudokuParticipation.ToLogic(this, isRanked:false);
             await InitPage();
         }
 
         private void ClearGrid()
         {
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    //on cherche la case au coordonée i j
-                    TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
-                    if (textBox != null)
-                    {
-                        textBox.Text = "";
-                    }
-                    else
-                    {
-                        //si on ne trouve pas de textbox a ces coordonées c'est qu'il s'agit d'une note, et donc d'une grille
-                        Grid grid = (Grid)this.FindName($"notegrid{i}{j}");
-                        _SudokuLogic.CreateTextBox(grid);
-                    }
-
-                }
-            }
+            _SudokuLogic.ClearGrid();
         }
 
     }   
