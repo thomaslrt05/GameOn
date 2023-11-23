@@ -17,7 +17,20 @@ namespace GameOn.DataAccesLayer
         private DepartementFactory? _departementFact = null;
         private SudokuFactory? _sudokuFact = null;
         private SudokuParticipationFactory? _sudokuParticipationFact = null;
+        private NotificationFactory? _notifFactory = null;
 
+        public NotificationFactory NotifFactory
+        {
+            get
+            {
+                if (_notifFactory == null)
+                {
+                    _notifFactory = new NotificationFactory();
+                }
+
+                return _notifFactory;
+            }
+        }
 
         public DepartementFactory DepartementFact
         {
