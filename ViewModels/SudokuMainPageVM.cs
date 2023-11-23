@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Input;
+using GameOn.DataAccesLayer;
+using GameOn.Models;
 
 namespace GameOn.ViewModels
 {
@@ -47,8 +49,16 @@ namespace GameOn.ViewModels
 
         private void ExecuteButtonRankedGame(object parameter)
         {
+            var sudokuParticipation = new DAL().SudokuParticipationFact.GetTodayParticipationOfUser(ConnectionSingleton.UserConnected.Id);
             MainWindowVM mainWindowVM = MainWindowVM.Instance;
-            mainWindowVM.CurrentPage = new SudokuRankedPage();
+            if(sudokuParticipation is null || sudokuParticipation.EndDate is null)
+            {
+                mainWindowVM.CurrentPage = new SudokuRankedPage();
+            }
+            else
+            {
+                MessageBox.Show("Vous avez déja fini le sudoku du jour");
+            }
         }
 
       

@@ -128,7 +128,7 @@ namespace GameOn.Views.Pages
                 }
 
                 //transformer la participation en gameLogic
-                _SudokuLogic = SudokuLogic.SudokuParticipationToLogic(_SudokuParticipation,this);
+                _SudokuLogic = _SudokuParticipation.ToLogic(this, isRanked:true);
 
                 //ouvrire la fenetre avec les données du gameParticipation
                 for (int iLogicRow = 0; iLogicRow < 9; iLogicRow++)

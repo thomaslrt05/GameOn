@@ -611,11 +611,22 @@
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-
             <Label Content="Temps de jeu" Grid.Row="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+            <Label Content="Difficulté" FontWeight="Bold" FontSize="22" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,-7,0,0"/>
+
+            <ComboBox x:Name="difficulteComboBox" 
+                  HorizontalAlignment="Left" 
+                  VerticalAlignment="Top" 
+                  SelectedIndex="0" 
+                  SelectionChanged="ChangeDifficulty" Grid.Column="1" Margin="12,0,0,0">
+                <ComboBoxItem Content="Facile"/>
+                <ComboBoxItem Content="Moyen"/>
+                <ComboBoxItem Content="Difficile"/>
+            </ComboBox>
+
             <Label x:Name="TimerGame" Grid.Row="1" Grid.Column="1" FontSize="35" HorizontalAlignment="Center" VerticalAlignment="Center" Content="00:00:00" />
 
-            <Button Width="100" Height="50" Grid.Row="2" Content="Nouvelle grille" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
+            <Button Width="100" Height="50" Grid.Row="2"  Content="Nouvelle grille" Click="NewGrid" Canvas.Left="443" Canvas.Top="392" />
             <Button Width="100" Height="50" Grid.Row="2" Grid.Column="1" Command="{Binding ChangePageCommand}" Content="Retour au menu" Click="SaveGame" Canvas.Left="443" Canvas.Top="392" />
         </Grid>
 
