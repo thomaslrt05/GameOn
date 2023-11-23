@@ -1,4 +1,5 @@
-﻿using GameOn.Models.Game;
+﻿using GameOn.DataAccesLayer;
+using GameOn.Models.Game;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace GameOn.Models
 {
@@ -46,7 +48,22 @@ namespace GameOn.Models
             return jsonString;
 
         }
+
+        public SudokuLogic ToLogic(Page sudokuPage, bool isRanked)
+        {
+            //obtenir la solution grid grace a la foreign key vers le sudoku en question
+            DAL dal = new DAL();
+            Sudoku? sudoku = dal.SudokuFactory.Get(SudokuId);
+            if (sudoku == null) { throw new Exception("sudoku n'éxiste pas"); }
+
+            SudokuCell[,] sudokuGrid = JsonConvert.DeserializeObject<SudokuCell[,]>(ActualGrid);
+
+            int[,] gridSolution = JsonConvert.DeserializeObject<int[,]>(sudoku.SolutionGrid);
+            return new SudokuLogic(sudokuGrid, gridSolution, sudokuPage, isRanked);
+
+        }
+
     }
 
-   
+
 }

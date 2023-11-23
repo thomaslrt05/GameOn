@@ -1,4 +1,5 @@
 ﻿using GameOn.DataAccesLayer;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,6 @@ namespace GameOn.Models
         public bool IsRanked { get; set; }
         public int Difficulty { get; set; }
 
-        
         public Sudoku(int id, DateTime creationDate, string grid, string solutionGrid, bool isRanked, int difficulty)
         {
             Id = id;
@@ -28,7 +28,6 @@ namespace GameOn.Models
             IsRanked = isRanked;
             Difficulty = difficulty;
         }
-        
         public static async Task<Sudoku> CreateSudoku(bool isRanked = true)
         {
             String content = await GetNewSudoku();
@@ -51,8 +50,7 @@ namespace GameOn.Models
             }while (s.Difficulty != difficulty);
             return s;
         }
-
-        static async Task<string> GetNewSudoku()
+        private static async Task<string> GetNewSudoku()
         {
             string url = "https://sudoku-api.vercel.app/api/dosuku";
 
@@ -61,7 +59,6 @@ namespace GameOn.Models
 
             return content;
         }
-
         private static int CheckDifficulty(string difficulty)
         {
             switch (difficulty)
@@ -73,7 +70,7 @@ namespace GameOn.Models
                 default: 
                     return 3;
             }
-        } 
+        }
 
     }
 

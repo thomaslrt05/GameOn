@@ -3,6 +3,7 @@ using GameOn.Views.Pages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using GameOn.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 
 namespace GameOn.Models.Game
@@ -22,30 +24,18 @@ namespace GameOn.Models.Game
         public SudokuCell[,] Grid { get; private set; }
         public int[,] SolutionGrid { get; private set; }
         public bool NoteEnabled { get; set; }
-
         public Page SudokuPage {get;set;}
-
-        public SudokuLogic(SudokuCell[,] grid, int[,] solutionGrid, Page sudokuPage)
+        public bool IsRanked { get;set;}
+        
+        public SudokuLogic(SudokuCell[,] grid, int[,] solutionGrid, Page sudokuPage, bool isRanked)
         {
             Grid = grid;
             SolutionGrid = solutionGrid;
             NoteEnabled = false;
             SudokuPage = sudokuPage;
+            IsRanked = isRanked;
         }
-        public static SudokuLogic SudokuParticipationToLogic(SudokuParticipation participation, Page sudokuPage)
-        {
-            //obtenir la solution grid grace a la foreign key vers le sudoku en question
-            DAL dal = new DAL();
-            Sudoku? sudoku = dal.SudokuFactory.Get(participation.SudokuId);
-            if (sudoku == null) { throw new Exception("sudoku n'éxiste pas"); }
 
-            SudokuCell[,] sudokuGrid = JsonConvert.DeserializeObject<SudokuCell[,]>(participation.ActualGrid);
-
-            int[,] gridSolution = JsonConvert.DeserializeObject<int[,]>(sudoku.Grid);
-            return new SudokuLogic(sudokuGrid, gridSolution,sudokuPage);
-
-        }
-        //todo: Mettre toutes les fonctions de SudokuRankedPage dans cette classes pour pouvoir les réutiliser avec les autres modes de sudoku
         public void SaveGame(Page sudokuPage, SudokuParticipation sudokuParticipation)
         {
             //Actualiser la grille de gameLogic avec tout les chiffres de la vue
@@ -86,7 +76,14 @@ namespace GameOn.Models.Game
             }
             string jsonGrid = JsonConvert.SerializeObject(Grid);
             sudokuParticipation.ActualGrid = jsonGrid;
+            if(IsWin())
+            {
+                sudokuParticipation.EndDate = DateTime.Now;
+                GivePoints(sudokuParticipation);
+                MessageBox.Show("Win !");
+            }
             new DAL().SudokuParticipationFact.Save(sudokuParticipation);
+
         }
         public void TextBox_TextChanged(object sender, TextChangedEventArgs args)
         {
@@ -168,53 +165,59 @@ namespace GameOn.Models.Game
             //on enleve la textbox de la grille
             parentGrid.Children.Remove(textBox);
         }
+
+        //retourne a un textbox au lieu de la grille de note
+        public void CreateTextBox(Grid noteGrid)
+        {
+            Grid parentGrid = (Grid)noteGrid.Parent;
+
+            int viewRow = System.Windows.Controls.Grid.GetRow(noteGrid);
+            int viewCol = System.Windows.Controls.Grid.GetColumn(noteGrid);
+            int logicRow = int.Parse(noteGrid.Name[8].ToString());
+            int logicCol = int.Parse(noteGrid.Name[9].ToString());
+            TextBox newTextBox = new TextBox();
+
+            string gridName = noteGrid.Name;
+            newTextBox.Text = "";
+            newTextBox.FontSize = 30;
+            newTextBox.Name = $"text{logicRow}{logicCol}";
+
+            SudokuPage.RegisterName(newTextBox.Name, newTextBox);
+
+            SudokuPage.UnregisterName(gridName);
+            // Ajoutez la nouvelle Grid au parentGrid
+            parentGrid.Children.Add(newTextBox);
+
+            // Ajoutez la nouvelle Grid au parentGrid en spécifiant la position de row et col
+            System.Windows.Controls.Grid.SetRow(newTextBox, viewRow);
+            System.Windows.Controls.Grid.SetColumn(newTextBox, viewCol);
+
+            newTextBox.HorizontalContentAlignment = HorizontalAlignment.Center;
+            newTextBox.VerticalContentAlignment = VerticalAlignment.Center;
+            newTextBox.PreviewMouseDown += TextBox_Click;
+            newTextBox.TextChanged += TextBox_TextChanged;
+            newTextBox.Tag = "false";
+            newTextBox.IsReadOnly = false;
+
+            if (ShouldSetBackgroundWhite(parentGrid))
+            {
+                newTextBox.Background = Brushes.White;
+            }
+            else
+            {
+                newTextBox.Background = Brushes.LightBlue;
+            }
+
+            parentGrid.Children.Remove(noteGrid);
+
+        }
         public void Notes_Click(object sender, RoutedEventArgs e)
         {
             if (!NoteEnabled)
             {
                 TextBox textBoxClicked = (TextBox)sender;
                 Grid noteGrid = (Grid)textBoxClicked.Parent;
-                Grid parentGrid = (Grid)noteGrid.Parent;
-
-                int viewRow = System.Windows.Controls.Grid.GetRow(noteGrid);
-                int viewCol = System.Windows.Controls.Grid.GetColumn(noteGrid);
-                int logicRow = int.Parse(noteGrid.Name[8].ToString());
-                int logicCol = int.Parse(noteGrid.Name[9].ToString());
-                TextBox newTextBox = new TextBox();
-
-                string gridName = noteGrid.Name;
-                newTextBox.Text = "";
-                newTextBox.FontSize = 30;
-                newTextBox.Name = $"text{logicRow}{logicCol}";
-
-                SudokuPage.RegisterName(newTextBox.Name, newTextBox);
-
-                SudokuPage.UnregisterName(gridName);
-                // Ajoutez la nouvelle Grid au parentGrid
-                parentGrid.Children.Add(newTextBox);
-
-                // Ajoutez la nouvelle Grid au parentGrid en spécifiant la position de row et col
-                System.Windows.Controls.Grid.SetRow(newTextBox, viewRow);
-                System.Windows.Controls.Grid.SetColumn(newTextBox, viewCol);
-
-                newTextBox.HorizontalContentAlignment = HorizontalAlignment.Center;
-                newTextBox.VerticalContentAlignment = VerticalAlignment.Center;
-                newTextBox.PreviewMouseDown += TextBox_Click;
-                newTextBox.TextChanged += TextBox_TextChanged;
-                newTextBox.Tag = "false";
-                newTextBox.IsReadOnly = false;
-
-                if (ShouldSetBackgroundWhite(parentGrid))
-                {
-                    newTextBox.Background = Brushes.White;
-                }
-                else
-                {
-                    newTextBox.Background = Brushes.LightBlue;
-                }
-
-                parentGrid.Children.Remove(noteGrid);
-
+                CreateTextBox(noteGrid);
 
             }
         }
@@ -245,8 +248,62 @@ namespace GameOn.Models.Game
         {
             return value >= min && value <= max;
         }
+        public bool IsWin()
+        {
+            if (HasNote())
+                return false;
 
-        
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    int a = SolutionGrid[i, j];
+                    int b =(int)Grid[i, j].Value;
+                    if (SolutionGrid[i,j] != (int)Grid[i,j].Value)
+                        return false;
+                }
+            }
+            return true;
+
+        }
+        public bool HasNote()
+        {
+            for(int i = 0; i < 9;i++)
+            {
+                Grid g = (Grid)SudokuPage.FindName($"grid{i}");
+                foreach(UIElement children in g.Children)
+                {
+                    if (children is FrameworkElement element && element.Name.StartsWith("notegrid"))
+                        return true;
+
+                }
+            }
+            return false;
+
+
+        }
+        public void GivePoints(SudokuParticipation sudokuParticipation)
+        {
+            //check si il y'a déja des game fini pour ce sudoku
+            
+            int nbWins = new DAL().SudokuParticipationFact.GetNbWins(sudokuParticipation.SudokuId);
+            switch (nbWins)
+            {
+                case 0:
+                    sudokuParticipation.PointWon = 10;
+                    break;
+                case 1:
+                    sudokuParticipation.PointWon = 6;
+                    break;
+                case 2: case 3: case 4:
+                    sudokuParticipation.PointWon = 3;
+                    break;
+                default:
+                    sudokuParticipation.PointWon = 1;
+                    break;
+            }
+        }
+
 
         public static bool ShouldSetBackgroundWhite(Grid parentGrid)
         {

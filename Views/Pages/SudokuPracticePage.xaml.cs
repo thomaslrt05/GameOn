@@ -30,19 +30,19 @@ namespace GameOn.Views.Pages
         public SudokuLogic _SudokuLogic { get; set; }
         private DispatcherTimer gameTimer;
         private TimeSpan gameTime;
-
+        public int Difficulty { get; set; }
         public SudokuPracticePage()
         {
             InitializeComponent();
             this.DataContext = new SudokuRankedPageVM();
             InitPage();
+            Difficulty = 1;
         }
         private async Task InitPage()
         {
             await LoadSudokuAsync();
             await LoadTimerGame();
         }
-
         private async Task LoadTimerGame()
         {
             gameTimer = new DispatcherTimer();
@@ -65,15 +65,14 @@ namespace GameOn.Views.Pages
             try
             {
                 DAL dal = new DAL();
-                int difficulty = 1;
 
                 //Check si il y'a déja une participation du user dans cette difficulté
-                _SudokuParticipation = dal.SudokuParticipationFact.GetLastUnrankedSudokuOfUser(ConnectionSingleton.UserConnected.Id,difficulty);
+                _SudokuParticipation = dal.SudokuParticipationFact.GetLastUnrankedSudokuOfUser(ConnectionSingleton.UserConnected.Id,Difficulty);
 
                 if (_SudokuParticipation == null)
                 {
 
-                    _SudokuModel = await Sudoku.CreateSudoku(isRanked:false, difficulty); ;
+                    _SudokuModel = await Sudoku.CreateSudoku(isRanked:false, Difficulty); ;
                     dal.SudokuFactory.Save(_SudokuModel);
                     
                     //creé le sudokuParaticipation pour ce user et ce sudoku
@@ -96,7 +95,7 @@ namespace GameOn.Views.Pages
                 }
 
                 //transformer la participation en gameLogic
-                _SudokuLogic = SudokuLogic.SudokuParticipationToLogic(_SudokuParticipation, this);
+                _SudokuLogic = _SudokuParticipation.ToLogic(this, isRanked:false); 
 
                 //ouvrire la fenetre avec les données du gameParticipation
                 for (int iLogicRow = 0; iLogicRow < 9; iLogicRow++)
@@ -153,5 +152,50 @@ namespace GameOn.Views.Pages
         {
             _SudokuLogic.UnCheckNotes();
         }
-    }
+
+        private async void ChangeDifficulty(object sender, RoutedEventArgs e)
+        {
+            int selectedIndex = difficulteComboBox.SelectedIndex;
+            Difficulty = (selectedIndex+1);
+            if(_SudokuLogic is not null)
+            {
+                gameTimer.Stop();
+                _SudokuLogic.SaveGame(this, _SudokuParticipation);
+                ClearGrid();
+                await InitPage();
+            }
+
+        }
+        private async void NewGrid(object sender, RoutedEventArgs e)
+        {
+            ClearGrid();
+            //crée nouveau sudoku
+            //y assigner la participation
+            await InitPage();
+        }
+
+        private void ClearGrid()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    //on cherche la case au coordonée i j
+                    TextBox textBox = (TextBox)this.FindName($"text{i}{j}");
+                    if (textBox != null)
+                    {
+                        textBox.Text = "";
+                    }
+                    else
+                    {
+                        //si on ne trouve pas de textbox a ces coordonées c'est qu'il s'agit d'une note, et donc d'une grille
+                        Grid grid = (Grid)this.FindName($"notegrid{i}{j}");
+                        _SudokuLogic.CreateTextBox(grid);
+                    }
+
+                }
+            }
+        }
+
+    }   
 }

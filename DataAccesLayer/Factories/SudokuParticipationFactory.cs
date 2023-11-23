@@ -156,7 +156,34 @@ namespace GameOn.DataAccesLayer.Factories
             }
         }
 
-        
+        public int GetNbWins(int sudokuId)
+        {
+            int nbWins = 0;
+            MySqlConnection? mySqlCnn = null;
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT COUNT(*) AS NumberOfWins\r\nFROM sudokuParticipation\r\nWHERE sudoku = @Id\r\n      AND EndDate IS NOT NULL;\r\n";
+                mySqlCmd.Parameters.AddWithValue("@Id", sudokuId);
+
+                using (MySqlDataReader reader = mySqlCmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        nbWins = reader.GetInt32("NumberOfWins");
+                    }
+                }
+            }
+            finally
+            {
+                mySqlCnn?.Close();
+            }
+            return nbWins;
+
+        }
     }
 }
 
