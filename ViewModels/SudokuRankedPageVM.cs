@@ -55,8 +55,7 @@ namespace GameOn.ViewModels
        
         private void ExecuteBackToMenuButton(object parameter)
         {
-            MainWindowVM mainWindowVM = MainWindowVM.Instance;
-            Instance.CurrentPage = new LandingPage();
+            MainWindowVM.Instance.CurrentPage = new LandingPage();
         }
 
         private bool CanExecute(object parameter)
