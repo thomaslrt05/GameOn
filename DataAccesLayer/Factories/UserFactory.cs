@@ -189,7 +189,42 @@ namespace GameOn.DataAccesLayer.Factories
             return totalPoints;
         }
 
-        public int GetAllPointOfUserByDepartement(User user,string departementName)
+        public List<User> GetAllUsersOfDepartement(string departementName)
+        {
+            List<User> users = new List<User>();
+            MySqlConnection mySqlCnn = null;
+            MySqlDataReader mySqlDataReader = null;
+
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT u.* " +
+                                       "FROM user u " +
+                                       "JOIN departement d ON u.departement = d.Id " +
+                                       "WHERE d.name = @departementName";
+
+                mySqlCmd.Parameters.AddWithValue("@departementName", departementName);
+
+                mySqlDataReader = mySqlCmd.ExecuteReader();
+
+                while (mySqlDataReader.Read())
+                {
+                    users.Add(CreateFromReader(mySqlDataReader));
+                }
+            }
+            finally
+            {
+                mySqlDataReader?.Close();
+                mySqlCnn?.Close();
+            }
+
+            return users;
+        }
+
+        public int GetAllPointOfUserFiltredByDepartement(User user,string departementName)
         {
             MySqlConnection? mySqlCnn = null;
             MySqlDataReader? mySqlDataReader = null;
