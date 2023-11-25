@@ -1,6 +1,7 @@
 ﻿
 using GameOn.Models;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -183,6 +184,46 @@ namespace GameOn.DataAccesLayer.Factories
             }
             return nbWins;
 
+        }
+
+        public int GetPointsOfDepartement(int departementId)
+        {
+            int totalPoints = 0;
+            MySqlConnection mySqlCnn = null;
+            MySqlDataReader mySqlDataReader = null;
+
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT SUM(sp.pointWon) " +
+                                       "FROM sudokuParticipation sp " +
+                                       "JOIN user u ON sp.user_id = u.Id " +
+                                       "WHERE u.departement = @departmentId";
+
+                mySqlCmd.Parameters.AddWithValue("@departmentId", departementId);
+
+                mySqlDataReader = mySqlCmd.ExecuteReader();
+
+                if (mySqlDataReader.Read())
+                {
+                    object result = mySqlDataReader.GetValue(0);
+
+                    if (result != DBNull.Value)
+                    {
+                        totalPoints = Convert.ToInt32(result);
+                    }
+                }
+            }
+            finally
+            {
+                mySqlDataReader?.Close();
+                mySqlCnn?.Close();
+            }
+
+            return totalPoints;
         }
     }
 }

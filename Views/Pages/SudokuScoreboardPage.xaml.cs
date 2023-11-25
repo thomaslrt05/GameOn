@@ -24,6 +24,8 @@ namespace GameOn.Views.Pages
     /// </summary>
     public partial class SudokuScoreboardPage : Page
     {
+        private readonly string AllDepartementFilter = "Par deparement"; 
+        private readonly string NoFilter = "Aucun filtre"; 
         public bool IsGeneral { get; set; } = true;
         public SudokuScoreboardPage()
         {
@@ -39,14 +41,16 @@ namespace GameOn.Views.Pages
                 DAL dal = new DAL();
                 List<Departement>? departements = dal.DepartementFact.GetAll();
                 ComboBoxDepartement.Items.Clear();
+                ComboBoxDepartement.Items.Add(NoFilter);
+
                 foreach (Departement departement in departements)
                 {
                     ComboBoxDepartement.Items.Add(departement.Name);
                 }
-                if (ComboBoxDepartement.Items.Count > 0)
-                {
-                    ComboBoxDepartement.SelectedIndex = 0;
-                }
+                ComboBoxDepartement.Items.Add(AllDepartementFilter);
+
+                ComboBoxDepartement.SelectedIndex = 0;
+                
             }
             catch (Exception ex)
             {
@@ -78,9 +82,10 @@ namespace GameOn.Views.Pages
         public void LoadWithFilter(object sender, RoutedEventArgs e)
         {
             string selectedDepartment = ComboBoxDepartement.SelectedItem.ToString();
-            if (IsGeneral) LoadScoreboardByDepartement(selectedDepartment);
-            else LoadScoreboardWeekByDepartement(selectedDepartment);
+            if (IsGeneral) LoadFiltredScoreboardOfDepartement(selectedDepartment);
+            else LoadFiltredScoreboardOfDepartementByWeek(selectedDepartment);
         }
+
 
 
         public void LoadScoreboardGeneral(object sender, RoutedEventArgs e)
@@ -137,20 +142,45 @@ namespace GameOn.Views.Pages
         }
 
 
-        public void LoadScoreboardByDepartement(string departement)
+        public void LoadFiltredScoreboardOfDepartement(string filter) //le filtre est le nom du département
         {
             try
             {
                 DAL dal = new DAL();
-                List<User>? usersList = dal.UserFact.GetAllUser();
-                List<UserViewModel> dataList = new List<UserViewModel>();
-                int points = 0;
-                foreach (User user in usersList)
+                if(filter != AllDepartementFilter && filter != NoFilter)
                 {
-                    points = dal.UserFact.GetAllPointOfUserByDepartement(user,departement);
-                    dataList.Add(new UserViewModel(user, points));
+                    List<User>? usersList = dal.UserFact.GetAllUsersOfDepartement(filter);
+                    List<UserViewModel> dataList = new List<UserViewModel>();
+                    int points = 0;
+                    foreach (User user in usersList)
+                    {
+                        points = dal.UserFact.GetAllPointOfUser(user);
+                        dataList.Add(new UserViewModel(user, points));
+                    }
+                    dataGrid.ItemsSource = dataList;
                 }
-                dataGrid.ItemsSource = dataList;
+                else
+                {
+                    //todo: handle no filtre
+                    List<Departement>? departements = dal.DepartementFact.GetAll();
+                    if (departements is null)
+                    {
+                        MessageBox.Show("Il n'y a aucun département");
+                        return;
+                    }
+                    List<DepartementViewModel> dataList = new List<DepartementViewModel>();
+
+                    foreach(Departement departement in departements )
+                    {
+                        int points = dal.SudokuParticipationFact.GetPointsOfDepartement(departement.Id);
+                        dataList.Add(new DepartementViewModel(departement, points));
+                        dataGrid.ItemsSource = dataList;
+
+                    }
+
+
+                }
+
             }
             catch (Exception ex)
             {
@@ -158,7 +188,7 @@ namespace GameOn.Views.Pages
             }
         }
 
-        public void LoadScoreboardWeekByDepartement(string departement)
+        public void LoadFiltredScoreboardOfDepartementByWeek(string departement)
         {
             try
             {

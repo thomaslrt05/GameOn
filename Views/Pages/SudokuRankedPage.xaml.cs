@@ -140,6 +140,7 @@ namespace GameOn.Views.Pages
 
                         textBox.Text = cellValue.Value != 0 ? cellValue.Value.ToString() : "";
                         textBox.IsReadOnly = !cellValue.IsEditable;
+
                         textBox.Tag = cellValue.IsNote.ToString();
                         // si c'est une note crée la grille pour les notes
                         if(cellValue.IsNote)
