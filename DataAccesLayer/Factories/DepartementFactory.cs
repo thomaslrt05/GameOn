@@ -58,6 +58,7 @@ namespace GameOn.DataAccesLayer.Factories
 
             try
             {
+                departements = new List<Departement>();
                 mySqlCnn = new MySqlConnection(DAL.ConnectionString);
                 mySqlCnn.Open();
 
