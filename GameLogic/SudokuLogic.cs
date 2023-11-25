@@ -77,15 +77,10 @@ namespace GameOn.Models.Game
             }
             string jsonGrid = JsonConvert.SerializeObject(Grid);
             sudokuParticipation.ActualGrid = jsonGrid;
-            if(IsWin())
+            if(IsWin() && sudokuParticipation.EndDate is null)
             {
                 sudokuParticipation.EndDate = DateTime.Now;
                 MessageBox.Show("Win !");
-                // Si je lis bien tu regardes si la game est win et dans tous les cas tu donnes des points
-                // je pense il faudrait mettre un bool en mode la participation la a déjà gagné
-                // la premier fois tu vas give des points et mettre la variable a true
-                // puis après tu changes la condition en isRanked && !AlreadyWin et ça devrait régler je pense 
-                // sinon jsp
                 if(IsRanked)
                 {
                     GivePoints(sudokuParticipation);
