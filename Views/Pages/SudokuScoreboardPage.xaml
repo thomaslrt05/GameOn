@@ -26,11 +26,15 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Label Content="Générale" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40"></Label>
-            <Label Content="Semaine" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40"></Label>
+            <Button Content="Générale" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40" Width="200" Height="50" Background="Azure" Click="LoadScoreboardGeneral"/>
+            <Button Content="Semaine" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="40" Width="200" Height="50" Background="Azure" Click="LoadScoreboardWeek"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ComboBox Name="ComboBoxDepartement"  Width="200" Height="30" Margin="5"></ComboBox>
+                <Button Content="Filtrer" Width="100" Height="30" Margin="5" Click="LoadWithFilter"/>
+            </StackPanel>
         </Grid>
 
-        <Grid VerticalAlignment="Center" Margin="20" Height="280">
+        <Grid VerticalAlignment="Center" Margin="30" Height="200">
             <ScrollViewer VerticalScrollBarVisibility="Disabled">
                 <DataGrid Name="dataGrid" AutoGenerateColumns="False" Background="Transparent" HeadersVisibility="Column">
                     <DataGrid.Columns>
