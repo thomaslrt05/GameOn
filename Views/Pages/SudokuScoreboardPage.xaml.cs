@@ -30,6 +30,7 @@ namespace GameOn.Views.Pages
         public SudokuScoreboardPage()
         {
             InitializeComponent();
+            LoadColumnsUserDataGrid();
             LoadScoreboard();
             InitComboBoxDepartement();
         }
@@ -60,6 +61,8 @@ namespace GameOn.Views.Pages
 
         public void LoadScoreboard()
         {
+            LoadColumnsUserDataGrid();
+
             try
             {
                 DAL dal = new DAL();
@@ -79,6 +82,75 @@ namespace GameOn.Views.Pages
             }
         }
 
+        private void LoadColumnsUserDataGrid()
+        {
+            DeleteColumnsDataGrid();
+
+            DataGridTextColumn colonneNom = new DataGridTextColumn
+            {
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                Header = "Nom",
+                Binding = new System.Windows.Data.Binding("Utilisateur.LastName")
+            };
+
+            DataGridTextColumn colonnePrenom = new DataGridTextColumn
+            {
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                Header = "Prénom",
+                Binding = new System.Windows.Data.Binding("Utilisateur.Name")
+            };
+
+            DataGridTextColumn colonneDepartement = new DataGridTextColumn
+            {
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                Header = "Département",
+                Binding = new System.Windows.Data.Binding("Utilisateur.Departement.Name")
+            };
+
+            DataGridTextColumn colonnePoints = new DataGridTextColumn
+            {
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                Header = "Total points",
+                Binding = new System.Windows.Data.Binding("Points")
+            };
+
+            Style stylePoints = new Style(typeof(TextBlock));
+            stylePoints.Setters.Add(new Setter(TextBlock.FontWeightProperty, FontWeights.Bold));
+            colonnePoints.ElementStyle = stylePoints;
+
+            dataGrid.Columns.Add(colonneNom);
+            dataGrid.Columns.Add(colonnePrenom);
+            dataGrid.Columns.Add(colonneDepartement);
+            dataGrid.Columns.Add(colonnePoints);
+        }
+        private void DeleteColumnsDataGrid()
+        {
+            dataGrid.Columns.Clear();
+        }
+
+        private void LoadColumnsDepartement()
+        {
+            DeleteColumnsDataGrid();
+
+            DataGridTextColumn colonneDepartement = new DataGridTextColumn
+            {
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                Header = "Département",
+                Binding = new System.Windows.Data.Binding("Departement.Name")
+            };
+
+            DataGridTextColumn colonnePoints = new DataGridTextColumn
+            {
+                Width = new DataGridLength(1, DataGridLengthUnitType.Star),
+                Header = "Points",
+                Binding = new System.Windows.Data.Binding("Points")
+            };
+
+            dataGrid.Columns.Add(colonneDepartement);
+            dataGrid.Columns.Add(colonnePoints);
+        }
+
+
         public void LoadWithFilter(object sender, RoutedEventArgs e)
         {
             string selectedDepartment = ComboBoxDepartement.SelectedItem.ToString();
@@ -92,6 +164,7 @@ namespace GameOn.Views.Pages
         {
             try
             {
+                LoadColumnsUserDataGrid();
                 IsGeneral = true;
                 DAL dal = new DAL();
                 List<User>? usersList = dal.UserFact.GetAllUser();
@@ -114,6 +187,7 @@ namespace GameOn.Views.Pages
         {
             try
             {
+                LoadColumnsUserDataGrid();
                 IsGeneral = false;
                 DAL dal = new DAL();
                 Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = dal.UserFact.GetPointsByWeek();
@@ -149,6 +223,7 @@ namespace GameOn.Views.Pages
                 DAL dal = new DAL();
                 if(filter != AllDepartementFilter && filter != NoFilter)
                 {
+                    LoadColumnsUserDataGrid();
                     List<User>? usersList = dal.UserFact.GetAllUsersOfDepartement(filter);
                     List<UserViewModel> dataList = new List<UserViewModel>();
                     int points = 0;
@@ -161,22 +236,30 @@ namespace GameOn.Views.Pages
                 }
                 else
                 {
-                    //todo: handle no filtre
-                    List<Departement>? departements = dal.DepartementFact.GetAll();
-                    if (departements is null)
+                    if(filter == AllDepartementFilter)
                     {
-                        MessageBox.Show("Il n'y a aucun département");
-                        return;
-                    }
-                    List<DepartementViewModel> dataList = new List<DepartementViewModel>();
+                        LoadColumnsDepartement();
+                        List<Departement>? departements = dal.DepartementFact.GetAll();
+                        if (departements is null)
+                        {
+                            MessageBox.Show("Il n'y a aucun département");
+                            return;
+                        }
+                        List<DepartementViewModel> dataList = new List<DepartementViewModel>();
 
-                    foreach(Departement departement in departements )
+                        foreach (Departement departement in departements)
+                        {
+                            int points = dal.SudokuParticipationFact.GetPointsOfDepartement(departement.Id);
+                            dataList.Add(new DepartementViewModel(departement, points));
+                            dataGrid.ItemsSource = dataList;
+
+                        }
+                    }
+                    else
                     {
-                        int points = dal.SudokuParticipationFact.GetPointsOfDepartement(departement.Id);
-                        dataList.Add(new DepartementViewModel(departement, points));
-                        dataGrid.ItemsSource = dataList;
-
+                        LoadScoreboard();
                     }
+
 
 
                 }
@@ -192,7 +275,7 @@ namespace GameOn.Views.Pages
         {
             try
             {
-                
+                LoadColumnsUserDataGrid();
                 DAL dal = new DAL();
                 Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = dal.UserFact.GetPointsByWeekByDepartement(departement);
                 List<UserViewModel> dataList = new List<UserViewModel>();
