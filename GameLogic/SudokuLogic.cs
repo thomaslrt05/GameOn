@@ -140,6 +140,7 @@ namespace GameOn.Models.Game
             string textBoxName = textBox.Name;
             //on donne un nom a la grille pour pouvoir la retrouver quand on enregistera la game
             newGrid.Name = $"notegrid{iLogicRow}{iLogicCol}";
+            
             SudokuPage.RegisterName(newGrid.Name, newGrid);
 
             SudokuPage.UnregisterName(textBoxName);

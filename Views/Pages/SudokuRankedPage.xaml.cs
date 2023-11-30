@@ -140,10 +140,10 @@ namespace GameOn.Views.Pages
 
                         textBox.Text = cellValue.Value != 0 ? cellValue.Value.ToString() : "";
                         textBox.IsReadOnly = !cellValue.IsEditable;
-
                         textBox.Tag = cellValue.IsNote.ToString();
+                        if(!cellValue.IsEditable) textBox.FontWeight = FontWeights.Bold;
                         // si c'est une note crée la grille pour les notes
-                        if(cellValue.IsNote)
+                        if (cellValue.IsNote)
                         {
                             CreateNote(textBox,iLogicRow,iLogicCol);
                         }
