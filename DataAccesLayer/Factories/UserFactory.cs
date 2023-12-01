@@ -165,20 +165,27 @@ namespace GameOn.DataAccesLayer.Factories
             MySqlConnection? mySqlCnn = null;
             MySqlDataReader? mySqlDataReader = null;
             int totalPoints = 0;
+
             try
             {
                 mySqlCnn = new MySqlConnection(DAL.ConnectionString);
                 mySqlCnn.Open();
+
                 MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
                 mySqlCmd.CommandText = "SELECT SUM(PointWon) " +
                                         "FROM sudokuparticipation " +
                                         "WHERE User_Id = @Id ";
-                                        
+
                 mySqlCmd.Parameters.AddWithValue("@id", user.Id);
                 mySqlDataReader = mySqlCmd.ExecuteReader();
+
                 if (mySqlDataReader.Read())
                 {
-                    totalPoints =  mySqlDataReader.GetInt32(0);
+                    // Vérifier si la valeur retournée n'est pas DBNull
+                    if (!mySqlDataReader.IsDBNull(0))
+                    {
+                        totalPoints = mySqlDataReader.GetInt32(0);
+                    }
                 }
             }
             finally
@@ -186,6 +193,7 @@ namespace GameOn.DataAccesLayer.Factories
                 mySqlDataReader?.Close();
                 mySqlCnn?.Close();
             }
+
             return totalPoints;
         }
 

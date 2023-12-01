@@ -82,6 +82,7 @@ namespace GameOn.Views.Pages
             }
         }
 
+        //change les cols pour acceuilir les données du scoreboard des users
         private void LoadColumnsUserDataGrid()
         {
             DeleteColumnsDataGrid();
@@ -127,7 +128,7 @@ namespace GameOn.Views.Pages
         {
             dataGrid.Columns.Clear();
         }
-
+        //change les cols pour acceuilir les données du scoreboard des departement
         private void LoadColumnsDepartement()
         {
             DeleteColumnsDataGrid();
@@ -221,49 +222,46 @@ namespace GameOn.Views.Pages
             try
             {
                 DAL dal = new DAL();
-                if(filter != AllDepartementFilter && filter != NoFilter)
+
+                if (filter == AllDepartementFilter)
                 {
-                    LoadColumnsUserDataGrid();
-                    List<User>? usersList = dal.UserFact.GetAllUsersOfDepartement(filter);
-                    List<UserViewModel> dataList = new List<UserViewModel>();
-                    int points = 0;
-                    foreach (User user in usersList)
+                    LoadColumnsDepartement();
+                    List<Departement>? departements = dal.DepartementFact.GetAll();
+                    if (departements is null)
                     {
-                        points = dal.UserFact.GetAllPointOfUser(user);
-                        dataList.Add(new UserViewModel(user, points));
+                        MessageBox.Show("Il n'y a aucun département");
+                        return;
                     }
-                    dataGrid.ItemsSource = dataList;
-                }
-                else
-                {
-                    if(filter == AllDepartementFilter)
+                    List<DepartementViewModel> data = new List<DepartementViewModel>();
+
+                    foreach (Departement departement in departements)
                     {
-                        LoadColumnsDepartement();
-                        List<Departement>? departements = dal.DepartementFact.GetAll();
-                        if (departements is null)
-                        {
-                            MessageBox.Show("Il n'y a aucun département");
-                            return;
-                        }
-                        List<DepartementViewModel> dataList = new List<DepartementViewModel>();
+                        int p = dal.SudokuParticipationFact.GetPointsOfDepartement(departement.Id);
+                        data.Add(new DepartementViewModel(departement, p));
 
-                        foreach (Departement departement in departements)
-                        {
-                            int points = dal.SudokuParticipationFact.GetPointsOfDepartement(departement.Id);
-                            dataList.Add(new DepartementViewModel(departement, points));
-                            dataGrid.ItemsSource = dataList;
-
-                        }
                     }
-                    else
-                    {
-                        LoadScoreboard();
-                    }
+                    dataGrid.ItemsSource = data;
 
-
+                    return;
 
                 }
+                LoadColumnsUserDataGrid();
 
+                if (filter == NoFilter)
+                {
+                    LoadScoreboard();
+                    return;
+                }
+
+                List<User>? usersList = dal.UserFact.GetAllUsersOfDepartement(filter);
+                List<UserViewModel> dataList = new List<UserViewModel>();
+                int points = 0;
+                foreach (User user in usersList)
+                {
+                    points = dal.UserFact.GetAllPointOfUser(user);
+                    dataList.Add(new UserViewModel(user, points));
+                }
+                dataGrid.ItemsSource = dataList;
             }
             catch (Exception ex)
             {
