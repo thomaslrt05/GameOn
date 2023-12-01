@@ -60,7 +60,8 @@ namespace GameOn.ViewModels
 
         private void ExecuteNotif(object parameter)
         {
-            
+            NotificationWindow notification = new NotificationWindow();
+            notification.Show();
         }
 
         public ICommand ButtonLogOut { get; private set; }

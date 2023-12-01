@@ -300,7 +300,7 @@ namespace GameOn.DataAccesLayer.Factories
 
             try
             {
-                List<User> users = GetAllUser(); // Vous devrez implémenter la méthode GetAllUsers() pour obtenir la liste des utilisateurs.
+                List<User> users = GetAllUser(); 
 
                 foreach (User user in users)
                 {
