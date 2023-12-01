@@ -28,7 +28,7 @@
             </Grid.RowDefinitions>
 
             <Button Grid.Column="1" Height="30" Width="70"  Content="Profil" HorizontalAlignment="Center"  VerticalAlignment="Center" Click="ProfilButton" Command="{Binding ButtonProfil}"></Button>
-            <Button Grid.Column="2" Height="30" Width="90" Margin="2" Content="Notifications" HorizontalAlignment="Center"  VerticalAlignment="Center" Click="NotifButton"></Button>
+            <Button Grid.Column="2" Height="30" Width="90" Margin="2" Content="Notifications" HorizontalAlignment="Center"  VerticalAlignment="Center" Click="NotifButton" Command="{Binding ButtonNotif}"></Button>
             <Button Grid.Column="3" Height="30" Width="90" Margin="2" Content="Déconnexion"  VerticalAlignment="Center" HorizontalAlignment="Center" Click="LogOutButton" Command="{Binding ButtonLogOut}"/>
 
         </Grid>

@@ -36,8 +36,8 @@ namespace GameOn.DataAccesLayer.Factories
                 }
                 else
                 {
-                    mySqlCmd.CommandText = "UPDATE sudoku " +
-                                           "SET isSeen=@isSeen, content=@content, user_id=@user_id" +
+                    mySqlCmd.CommandText = "UPDATE notification " +
+                                           "SET isSeen=@isSeen, content=@content, user_id=@user_id " +
                                            "WHERE Id=@id";
 
                     mySqlCmd.Parameters.AddWithValue("@Id", notif.Id);
@@ -61,12 +61,63 @@ namespace GameOn.DataAccesLayer.Factories
             }
         }
 
-        public List<Notification> GetNotificationsOfUser(int userid) {
-            throw new NotImplementedException();
+        public List<Notification> GetUnseenNotificationsOfUser(int userId)
+        {
+            List<Notification> notifications = new List<Notification>();
+            MySqlConnection mySqlCnn = null;
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT * FROM notification WHERE user_id = @userId AND isSeen = 0";
+                mySqlCmd.Parameters.AddWithValue("@userId", userId);
+
+                using (MySqlDataReader reader = mySqlCmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Notification notification = CreateFromReader(reader);
+                        notifications.Add(notification);
+                    }
+                }
+            }
+            finally
+            {
+                mySqlCnn?.Close();
+            }
+
+            return notifications;
         }
-        public bool HasUnseenNotification(int userid) { 
-            throw new NotImplementedException();
+
+        public bool HasUnseenNotification(int userId)
+        {
+            MySqlConnection mySqlCnn = null;
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT COUNT(*) FROM notification WHERE user_id = @userId AND isSeen = 0";
+                mySqlCmd.Parameters.AddWithValue("@userId", userId);
+
+                int count = Convert.ToInt32(mySqlCmd.ExecuteScalar());
+
+                return count > 0;
+            }
+            finally
+            {
+                mySqlCnn?.Close();
+            }
         }
+        public void SetNotifAsSeen(Notification notif)
+        {
+            notif.IsSeen = true;
+            new DAL().NotifFactory.Save(notif);
+        }
+
 
     }
 }
