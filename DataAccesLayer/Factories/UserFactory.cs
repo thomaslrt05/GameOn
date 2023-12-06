@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls.Primitives;
 
 namespace GameOn.DataAccesLayer.Factories
@@ -306,30 +307,25 @@ namespace GameOn.DataAccesLayer.Factories
                 {
                     Dictionary<string, int> pointsByWeek = new Dictionary<string, int>();
 
-                    DateTime? userFirstParticipationDate = GetFirstParticipationDate(user.Id);
+                    DateTime? userFirstParticipationDate = GetParticipationDate(user.Id);
 
+                  
+
+                    // Boucle pour chaque semaine depuis la première participation de l'utilisateur
                     if (userFirstParticipationDate.HasValue)
                     {
-                        // Obtenez la date de début de la semaine actuelle (lundi) et de fin (dimanche)
-                        DateTime currentDate = DateTime.Now;
-                        DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
-                        DateTime startOfWeek = currentDate.AddDays(-(int)currentDayOfWeek + (int)DayOfWeek.Monday);
+                        // Obtenez la date de début (lundi) et de fin (dimanche) de la semaine de participation de l'utilisateur
+                        DateTime startOfWeek = userFirstParticipationDate.Value.Date.AddDays(-(int)userFirstParticipationDate.Value.DayOfWeek + (int)DayOfWeek.Monday);
                         DateTime endOfWeek = startOfWeek.AddDays(6);
 
-                        // Boucle pour chaque semaine depuis la première participation de l'utilisateur
-                        while (startOfWeek >= userFirstParticipationDate)
-                        {
-                            // Obtenez les points pour la semaine actuelle
-                            int totalPoints = GetAllPointOfUserForWeek(user, startOfWeek, endOfWeek);
+                        // Obtenez les points pour la semaine de participation de l'utilisateur
+                        int totalPoints = GetAllPointOfUserForWeek(user, startOfWeek, endOfWeek);
 
-                            // Ajoutez les points à la liste
-                            pointsByWeek.Add($"{startOfWeek.ToShortDateString()} - {endOfWeek.ToShortDateString()}", totalPoints);
-
-                            // Passez à la semaine précédente
-                            startOfWeek = startOfWeek.AddDays(-7);
-                            endOfWeek = endOfWeek.AddDays(-7);
-                        }
+                        // Ajoutez les points à la liste
+                        pointsByWeek.Add($"{startOfWeek.ToShortDateString()} - {endOfWeek.ToShortDateString()}", totalPoints);
                     }
+
+                    
 
                     // Ajoutez les points par semaine pour cet utilisateur à la liste principale
                     pointsByUserAndWeek.Add(user, pointsByWeek);
@@ -343,40 +339,6 @@ namespace GameOn.DataAccesLayer.Factories
 
             return pointsByUserAndWeek;
         }
-
-
-        public DateTime? GetFirstParticipationDate(int userId)
-        {
-            MySqlConnection? mySqlCnn = null;
-            MySqlDataReader? mySqlDataReader = null;
-            DateTime? firstParticipationDate = null;
-
-            try
-            {
-                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
-                mySqlCnn.Open();
-                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
-                mySqlCmd.CommandText = "SELECT MIN(StartDate) " +
-                                        "FROM sudokuparticipation " +
-                                        "WHERE User_Id = @Id";
-
-                mySqlCmd.Parameters.AddWithValue("@id", userId);
-
-                mySqlDataReader = mySqlCmd.ExecuteReader();
-                if (mySqlDataReader.Read() && !mySqlDataReader.IsDBNull(0))
-                {
-                    firstParticipationDate = mySqlDataReader.GetDateTime(0);
-                }
-            }
-            finally
-            {
-                mySqlDataReader?.Close();
-                mySqlCnn?.Close();
-            }
-
-            return firstParticipationDate;
-        }
-
 
         public int GetAllPointOfUserForWeek(User user, DateTime startOfWeek, DateTime endOfWeek)
         {
@@ -414,43 +376,38 @@ namespace GameOn.DataAccesLayer.Factories
         }
 
 
-
-        public Dictionary<User, Dictionary<string, int>> GetPointsByWeekByDepartement(string departement)
+        //------------- Fonctionne pas -----------
+        public Dictionary<User, Dictionary<string, int>> GetPointsByWeekAndDepartement(string departementName)
         {
             Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = new Dictionary<User, Dictionary<string, int>>();
 
             try
             {
-                List<User> users = GetAllUser(); // Vous devrez implémenter la méthode GetAllUsers() pour obtenir la liste des utilisateurs.
+                List<User> users = GetAllUser();
 
                 foreach (User user in users)
                 {
                     Dictionary<string, int> pointsByWeek = new Dictionary<string, int>();
 
-                    DateTime? userFirstParticipationDate = GetFirstParticipationDate(user.Id);
+                    DateTime? userFirstParticipationDate = GetParticipationDate(user.Id);
 
+
+
+                    // Boucle pour chaque semaine depuis la première participation de l'utilisateur
                     if (userFirstParticipationDate.HasValue)
                     {
-                        // Obtenez la date de début de la semaine actuelle (lundi) et de fin (dimanche)
-                        DateTime currentDate = DateTime.Now;
-                        DayOfWeek currentDayOfWeek = currentDate.DayOfWeek;
-                        DateTime startOfWeek = currentDate.AddDays(-(int)currentDayOfWeek + (int)DayOfWeek.Monday);
+                        // Obtenez la date de début (lundi) et de fin (dimanche) de la semaine de participation de l'utilisateur
+                        DateTime startOfWeek = userFirstParticipationDate.Value.Date.AddDays(-(int)userFirstParticipationDate.Value.DayOfWeek + (int)DayOfWeek.Monday);
                         DateTime endOfWeek = startOfWeek.AddDays(6);
 
-                        // Boucle pour chaque semaine depuis la première participation de l'utilisateur
-                        while (startOfWeek >= userFirstParticipationDate)
-                        {
-                            // Obtenez les points pour la semaine actuelle
-                            int totalPoints = GetAllPointOfUserForWeekByDepartement(user, startOfWeek, endOfWeek,departement);
+                        // Obtenez les points pour la semaine de participation de l'utilisateur
+                        int totalPoints = GetAllPointOfUserFiltredByDepartementAndDate(user,departementName ,startOfWeek, endOfWeek);
 
-                            // Ajoutez les points à la liste
-                            pointsByWeek.Add($"{startOfWeek.ToShortDateString()} - {endOfWeek.ToShortDateString()}", totalPoints);
-
-                            // Passez à la semaine précédente
-                            startOfWeek = startOfWeek.AddDays(-7);
-                            endOfWeek = endOfWeek.AddDays(-7);
-                        }
+                        // Ajoutez les points à la liste
+                        pointsByWeek.Add($"{startOfWeek.ToShortDateString()} - {endOfWeek.ToShortDateString()}", totalPoints);
                     }
+
+
 
                     // Ajoutez les points par semaine pour cet utilisateur à la liste principale
                     pointsByUserAndWeek.Add(user, pointsByWeek);
@@ -466,28 +423,26 @@ namespace GameOn.DataAccesLayer.Factories
         }
 
 
-        public int GetAllPointOfUserForWeekByDepartement(User user, DateTime startOfWeek, DateTime endOfWeek, string departementName)
+        public int GetAllPointOfUserFiltredByDepartementAndDate(User user, string departementName, DateTime startOfWeek, DateTime endOfWeek)
         {
             MySqlConnection? mySqlCnn = null;
             MySqlDataReader? mySqlDataReader = null;
             int totalPoints = 0;
-
             try
             {
                 mySqlCnn = new MySqlConnection(DAL.ConnectionString);
                 mySqlCnn.Open();
                 MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
-                mySqlCmd.CommandText = "SELECT SUM(PointWon) " +
-                                        "FROM sudokuparticipation " +
-                                        "WHERE User_Id = @UserId " +  // Utilisation de l'ID de l'utilisateur directement
-                                        "AND StartDate >= @StartOfWeek AND EndDate <= @EndOfWeek " +
-                                        "AND User_Id IN (SELECT Id FROM user WHERE Departement_Name = @DepartementName)";
+                mySqlCmd.CommandText = "SELECT SUM(PointWon)" +
+                                       "FROM sudokuparticipation" +
+                                        "WHERE User_Id IN(SELECT @Id FROM user WHERE Departement_Name = @DepartementName)" +
+                                        "AND StartDate >= @StartOfWeek AND EndDate <= @EndOfWeek";
 
-                mySqlCmd.Parameters.AddWithValue("@UserId", user.Id); // Utilisation de l'ID de l'utilisateur directement
+
+                mySqlCmd.Parameters.AddWithValue("@id", user.Id);
+                mySqlCmd.Parameters.AddWithValue("@DepartementName", departementName);
                 mySqlCmd.Parameters.AddWithValue("@StartOfWeek", startOfWeek);
                 mySqlCmd.Parameters.AddWithValue("@EndOfWeek", endOfWeek);
-                mySqlCmd.Parameters.AddWithValue("@DepartementName", departementName);
-
                 mySqlDataReader = mySqlCmd.ExecuteReader();
                 if (mySqlDataReader.Read())
                 {
@@ -499,9 +454,44 @@ namespace GameOn.DataAccesLayer.Factories
                 mySqlDataReader?.Close();
                 mySqlCnn?.Close();
             }
-
             return totalPoints;
         }
+        ///////////////////////////////////////////////////////////////////////////
+
+        public DateTime? GetParticipationDate(int userId)
+        {
+            MySqlConnection? mySqlCnn = null;
+            MySqlDataReader? mySqlDataReader = null;
+            DateTime? firstParticipationDate = null;
+
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT MAX(StartDate) " +
+                                        "FROM sudokuparticipation " +
+                                        "WHERE User_Id = @Id";
+
+                mySqlCmd.Parameters.AddWithValue("@id", userId);
+
+                mySqlDataReader = mySqlCmd.ExecuteReader();
+                if (mySqlDataReader.Read() && !mySqlDataReader.IsDBNull(0))
+                {
+                    firstParticipationDate = mySqlDataReader.GetDateTime(0);
+                }
+            }
+            finally
+            {
+                mySqlDataReader?.Close();
+                mySqlCnn?.Close();
+            }
+
+            return firstParticipationDate;
+        }
+
+        
+
 
 
         public UserFactory() { }
