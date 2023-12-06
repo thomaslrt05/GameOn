@@ -225,6 +225,52 @@ namespace GameOn.DataAccesLayer.Factories
 
             return totalPoints;
         }
+
+        public int GetPointsOfDepartementByWeek(int departementId)
+        {
+            int totalPoints = 0;
+            MySqlConnection mySqlCnn = null;
+            MySqlDataReader mySqlDataReader = null;
+            DateTime today = DateTime.Now;
+            DateTime startOfWeek = today.Date.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);
+            DateTime endOfWeek = startOfWeek.AddDays(6);
+
+            try
+            {
+                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
+                mySqlCnn.Open();
+
+                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
+                mySqlCmd.CommandText = "SELECT SUM(sp.pointWon) " +
+                                       "FROM sudokuParticipation sp " +
+                                       "JOIN user u ON sp.user_id = u.Id " +
+                                       "WHERE u.departement = @departmentId" +
+                                       "AND StartDate >= @StartOfWeek AND EndDate <= @EndOfWeek";
+
+                mySqlCmd.Parameters.AddWithValue("@departmentId", departementId);
+                mySqlCmd.Parameters.AddWithValue("@StartOfWeek", startOfWeek);
+                mySqlCmd.Parameters.AddWithValue("@EndOfWeek", endOfWeek);
+
+                mySqlDataReader = mySqlCmd.ExecuteReader();
+
+                if (mySqlDataReader.Read())
+                {
+                    object result = mySqlDataReader.GetValue(0);
+
+                    if (result != DBNull.Value)
+                    {
+                        totalPoints = Convert.ToInt32(result);
+                    }
+                }
+            }
+            finally
+            {
+                mySqlDataReader?.Close();
+                mySqlCnn?.Close();
+            }
+
+            return totalPoints;
+        }
     }
 }
 

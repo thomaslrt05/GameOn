@@ -24,9 +24,11 @@ namespace GameOn.Views.Pages
     /// </summary>
     public partial class SudokuScoreboardPage : Page
     {
-        private readonly string AllDepartementFilter = "Par deparement"; 
-        private readonly string NoFilter = "Aucun filtre"; 
-        public bool IsGeneral { get; set; } = true;
+        private readonly string AllDepartementFilter = "Par departement"; 
+        private readonly string NoFilter = "Aucun filtre";
+        public bool IsGeneralMode { get; set; } = true;
+        public bool IsWeekMode { get; set; } = false;
+
         public SudokuScoreboardPage()
         {
             InitializeComponent();
@@ -82,7 +84,7 @@ namespace GameOn.Views.Pages
             }
         }
 
-        //change les cols pour acceuilir les données du scoreboard des users
+        
         private void LoadColumnsUserDataGrid()
         {
             DeleteColumnsDataGrid();
@@ -128,7 +130,7 @@ namespace GameOn.Views.Pages
         {
             dataGrid.Columns.Clear();
         }
-        //change les cols pour acceuilir les données du scoreboard des departement
+        
         private void LoadColumnsDepartement()
         {
             DeleteColumnsDataGrid();
@@ -155,9 +157,10 @@ namespace GameOn.Views.Pages
         public void LoadWithFilter(object sender, RoutedEventArgs e)
         {
             string selectedDepartment = ComboBoxDepartement.SelectedItem.ToString();
-            if (IsGeneral) LoadFiltredScoreboardOfDepartement(selectedDepartment);
-            else LoadFiltredScoreboardOfDepartementByWeek(selectedDepartment);
+            if (IsGeneralMode) LoadFiltredScoreboardOfDepartement(selectedDepartment);
+            else if (IsWeekMode) LoadFiltredScoreboardOfDepartementByWeek(selectedDepartment);
         }
+
 
 
 
@@ -166,7 +169,8 @@ namespace GameOn.Views.Pages
             try
             {
                 LoadColumnsUserDataGrid();
-                IsGeneral = true;
+                IsGeneralMode = true;
+                IsWeekMode = false;
                 DAL dal = new DAL();
                 List<User>? usersList = dal.UserFact.GetAllUser();
                 List<UserViewModel> dataList = new List<UserViewModel>();
@@ -178,7 +182,7 @@ namespace GameOn.Views.Pages
                 }
                 dataGrid.ItemsSource = dataList;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Une erreur est survenue lors du chargement du scoreboard");
             }
@@ -189,26 +193,27 @@ namespace GameOn.Views.Pages
             try
             {
                 LoadColumnsUserDataGrid();
-                IsGeneral = false;
+                IsGeneralMode = false;
+                IsWeekMode = true;
                 DAL dal = new DAL();
                 Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = dal.UserFact.GetPointsByWeek();
-                List<UserViewModel> dataList = new List<UserViewModel>();
+                List<UserViewModel> weeklyRankingList = new List<UserViewModel>();
 
                 foreach (var userPointsEntry in pointsByUserAndWeek)
                 {
                     User user = userPointsEntry.Key;
                     Dictionary<string, int> pointsByWeek = userPointsEntry.Value;
 
-                    // Vous pouvez ajuster cette partie pour afficher les informations comme vous le souhaitez
-                    foreach (var weekEntry in pointsByWeek)
+
+                    var lastWeekPoints = pointsByWeek.LastOrDefault();
+                    if (lastWeekPoints.Key != null)
                     {
-                       
-                        int points = weekEntry.Value;
-                        dataList.Add(new UserViewModel(user, points));
+                        int points = lastWeekPoints.Value;
+                        weeklyRankingList.Add(new UserViewModel(user, points));
                     }
                 }
 
-                dataGrid.ItemsSource = dataList;
+                dataGrid.ItemsSource = weeklyRankingList;
             }
             catch (Exception ex)
             {
@@ -217,13 +222,14 @@ namespace GameOn.Views.Pages
         }
 
 
-        public void LoadFiltredScoreboardOfDepartement(string filter) //le filtre est le nom du département
+
+        public void LoadFiltredScoreboardOfDepartement(string departementName) 
         {
             try
             {
                 DAL dal = new DAL();
 
-                if (filter == AllDepartementFilter)
+                if (departementName == AllDepartementFilter)
                 {
                     LoadColumnsDepartement();
                     List<Departement>? departements = dal.DepartementFact.GetAll();
@@ -247,13 +253,13 @@ namespace GameOn.Views.Pages
                 }
                 LoadColumnsUserDataGrid();
 
-                if (filter == NoFilter)
+                if (departementName == NoFilter)
                 {
                     LoadScoreboard();
                     return;
                 }
 
-                List<User>? usersList = dal.UserFact.GetAllUsersOfDepartement(filter);
+                List<User>? usersList = dal.UserFact.GetAllUsersOfDepartement(departementName);
                 List<UserViewModel> dataList = new List<UserViewModel>();
                 int points = 0;
                 foreach (User user in usersList)
@@ -269,28 +275,55 @@ namespace GameOn.Views.Pages
             }
         }
 
-        public void LoadFiltredScoreboardOfDepartementByWeek(string departement)
+
+
+        //
+        // Fonctionne pas 
+        //
+        public void LoadFiltredScoreboardOfDepartementByWeek(string departementName)
         {
             try
             {
-                LoadColumnsUserDataGrid();
                 DAL dal = new DAL();
-                Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = dal.UserFact.GetPointsByWeekByDepartement(departement);
-                List<UserViewModel> dataList = new List<UserViewModel>();
 
-                foreach (var userPointsEntry in pointsByUserAndWeek)
+                if (departementName == AllDepartementFilter)
                 {
-                    User user = userPointsEntry.Key;
-                    Dictionary<string, int> pointsByWeek = userPointsEntry.Value;
-
-                    // Vous pouvez ajuster cette partie pour afficher les informations comme vous le souhaitez
-                    foreach (var weekEntry in pointsByWeek)
+                  
+                    LoadColumnsDepartement();
+                    List<Departement>? departements = dal.DepartementFact.GetAll();
+                    if (departements is null)
                     {
-
-                        int points = weekEntry.Value;
-                        dataList.Add(new UserViewModel(user, points));
+                        MessageBox.Show("Il n'y a aucun département");
+                        return;
                     }
+
+                    List<DepartementViewModel> data = new List<DepartementViewModel>();
+
+                    foreach (Departement departement in departements)
+                    {
+                        int p = dal.SudokuParticipationFact.GetPointsOfDepartementByWeek(departement.Id);
+                        data.Add(new DepartementViewModel(departement, p));
+                    }
+
+                    dataGrid.ItemsSource = data;
+                    return;
                 }
+
+                LoadColumnsUserDataGrid();
+
+                if (departementName == NoFilter)
+                {
+                    LoadScoreboard();
+                    return;
+                }
+
+               
+                Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = dal.UserFact.GetPointsByWeekAndDepartement(departementName);
+
+                
+                List<UserViewModel> dataList = pointsByUserAndWeek
+                    .Select(kv => new UserViewModel(kv.Key, kv.Value.Sum(w => w.Value)))
+                    .ToList();
 
                 dataGrid.ItemsSource = dataList;
             }
@@ -307,4 +340,5 @@ namespace GameOn.Views.Pages
             MainWindowVM.Instance.CurrentPage = new LandingPage();
         }
     }
+        
 }
