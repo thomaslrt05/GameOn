@@ -1,15 +1,20 @@
 ﻿using GameOn.Models;
 using MySql.Data.MySqlClient;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GameOn.DataAccesLayer.Factories
 {
+
     public class SudokuFactory
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public Sudoku CreateFromReader(MySqlDataReader mySqlDataReader)
         {
             int id = (int)mySqlDataReader["Id"];
@@ -58,6 +63,12 @@ namespace GameOn.DataAccesLayer.Factories
                     sudoku.Id = (int)mySqlCmd.LastInsertedId;
                 }
             }
+            catch
+            {
+                string ErrorMessage = "Error 3.1: could not save Sudoku";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
+            }
             finally
             {
                 mySqlCnn?.Close();
@@ -85,12 +96,19 @@ namespace GameOn.DataAccesLayer.Factories
                     }
                 }
 
-                return null; 
+            }
+            catch
+            {
+                string ErrorMessage = "Error 3.2: could not get game of the day";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
             }
             finally
             {
                 mySqlCnn?.Close();
+
             }
+            return null;
         }
         public Sudoku? Get(int id)
         {
@@ -113,12 +131,20 @@ namespace GameOn.DataAccesLayer.Factories
                     }
                 }
 
-                return null;
+            }
+            catch
+            {
+                string ErrorMessage = "Error 3.3: could not get sudoku with id "+id;
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
             }
             finally
             {
                 mySqlCnn?.Close();
             }
+            return null;
+
+
         }
     }
 }

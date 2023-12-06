@@ -9,24 +9,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GameOn.DataAccesLayer.Factories
 {
     public class SudokuParticipationFactory
     {
-        public static SudokuParticipation createEmpty()
-        {
-            return new SudokuParticipation
-            {
-                Id = 0, // Valeurs par défaut ou appropriées pour les autres propriétés
-                EndDate = null,
-                StartDate = DateTime.Now, // Vous pouvez modifier la valeur par défaut si nécessaire
-                PointWon = 0,
-                SudokuId = 0,
-                UserId = 0,
-                ActualGrid = string.Empty
-            };
-        }
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static SudokuParticipation CreateFromReader(IDataReader reader)
         {
@@ -70,12 +59,19 @@ namespace GameOn.DataAccesLayer.Factories
                     }
                 }
             }
+
+            catch
+            {
+                string ErrorMessage = "Error 4.1: could get participation to sudoku";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
+            }
+
             finally
             {
                 mySqlCnn?.Close();
             }
 
-            // Si aucune participation n'est trouvée, retournez null ou une valeur par défaut.
             return null;
         }
 
@@ -107,12 +103,19 @@ namespace GameOn.DataAccesLayer.Factories
                     }
                 }
             }
+
+            catch
+            {
+                string ErrorMessage = "Error 4.2: could not get participation to unranked game";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
+            }
+
             finally
             {
                 mySqlCnn?.Close();
             }
 
-            // Si aucun sudoku non classé n'est trouvé, retournez null ou une valeur par défaut.
             return null;
         }
         public void Save(SudokuParticipation participation)
@@ -151,6 +154,12 @@ namespace GameOn.DataAccesLayer.Factories
                     participation.Id = (int)mySqlCmd.LastInsertedId;
                 }
             }
+            catch
+            {
+                string ErrorMessage = "Error 4.3: could not save participation to sudoku";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
+            }
             finally
             {
                 mySqlCnn?.Close();
@@ -177,6 +186,12 @@ namespace GameOn.DataAccesLayer.Factories
                         nbWins = reader.GetInt32("NumberOfWins");
                     }
                 }
+            }
+            catch
+            {
+                string ErrorMessage = "Error 4.4: could get nb wins of sudoku "+sudokuId;
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
             }
             finally
             {
@@ -217,6 +232,14 @@ namespace GameOn.DataAccesLayer.Factories
                     }
                 }
             }
+
+            catch
+            {
+                string ErrorMessage = "Error 4.5: could not get nb points of departement "+departementId;
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
+            }
+
             finally
             {
                 mySqlDataReader?.Close();

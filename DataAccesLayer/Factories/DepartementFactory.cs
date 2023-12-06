@@ -6,12 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows;
 
 namespace GameOn.DataAccesLayer.Factories
 {
     public class DepartementFactory
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private Departement CreateFromReader(MySqlDataReader mySqlDataReader)
         {
             int id = (int)mySqlDataReader["Id"];
@@ -39,6 +40,12 @@ namespace GameOn.DataAccesLayer.Factories
                 {
                     departement = CreateFromReader(mySqlDataReader);
                 }
+            }
+            catch
+            {
+                string ErrorMessage = "Error 1.1: could not get all departements";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
             }
             finally
             {
@@ -71,6 +78,12 @@ namespace GameOn.DataAccesLayer.Factories
                     Departement departement = CreateFromReader(mySqlDataReader);
                     departements.Add(departement);
                 }
+            }
+            catch
+            {
+                string ErrorMessage = "Error 1.2: could not get all departements";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
             }
             finally
             {
