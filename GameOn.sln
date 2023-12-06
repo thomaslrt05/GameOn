@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameOn", "GameOn.csproj", "{FBE6E24D-D769-4084-B25D-C7D71A63F693}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameOn", "GameOn.csproj", "{FBE6E24D-D769-4084-B25D-C7D71A63F693}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "Éléments de solution", "{7F87D76C-293B-4045-AB2F-EB6CFD91C5A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

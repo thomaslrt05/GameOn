@@ -20,10 +20,13 @@ namespace GameOn
 { 
     public partial class MainWindow : Window
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = MainWindowVM.Instance;
+
         }
 
     }

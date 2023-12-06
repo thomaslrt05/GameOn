@@ -1,15 +1,19 @@
 ﻿using GameOn.Models;
 using MySql.Data.MySqlClient;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GameOn.DataAccesLayer.Factories
 {
     public class NotificationFactory
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public Notification CreateFromReader(MySqlDataReader mySqlDataReader)
         {
             int id = (int)mySqlDataReader["Id"];
@@ -54,7 +58,14 @@ namespace GameOn.DataAccesLayer.Factories
                 {
                     notif.Id = (int)mySqlCmd.LastInsertedId;
                 }
+            } 
+            catch 
+            {
+                string ErrorMessage = "Error 2.1: could not save notification";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
             }
+            
             finally
             {
                 mySqlCnn?.Close();
@@ -73,7 +84,7 @@ namespace GameOn.DataAccesLayer.Factories
                 MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
                 mySqlCmd.CommandText = "SELECT * FROM notification WHERE user_id = @userId AND isSeen = 0";
                 mySqlCmd.Parameters.AddWithValue("@userId", userId);
-
+                throw new Exception();
                 using (MySqlDataReader reader = mySqlCmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -82,6 +93,12 @@ namespace GameOn.DataAccesLayer.Factories
                         notifications.Add(notification);
                     }
                 }
+            }
+            catch
+            {
+                string ErrorMessage = "Error 2.2: could not get unseen notification";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
             }
             finally
             {
@@ -107,15 +124,25 @@ namespace GameOn.DataAccesLayer.Factories
 
                 return count > 0;
             }
+            catch
+            {
+                string ErrorMessage = "Error 2.3";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
+            }
             finally
             {
                 mySqlCnn?.Close();
             }
+            return false;
+
+
         }
         public void SetNotifAsSeen(Notification notif)
         {
             notif.IsSeen = true;
             new DAL().NotifFactory.Save(notif);
+
         }
 
 

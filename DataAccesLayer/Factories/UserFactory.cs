@@ -2,12 +2,15 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 
 namespace GameOn.DataAccesLayer.Factories
 {
     public class UserFactory
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private User CreateFromReader(MySqlDataReader mySqlDataReader)
         {
             int id = (int)mySqlDataReader["Id"];
@@ -20,10 +23,6 @@ namespace GameOn.DataAccesLayer.Factories
             Departement? departement = dal.DepartementFact.Get(departementId);
             return new User(id, name, lastName, mail, password, departement);
 
-        }
-        public User CreateEmpty()
-        {
-            return new User(0, string.Empty, string.Empty, string.Empty, string.Empty, null);
         }
 
         public void Save(User user)
@@ -63,6 +62,13 @@ namespace GameOn.DataAccesLayer.Factories
                     user.Id = (int)mySqlCmd.LastInsertedId;
                 }
             }
+            catch
+            {
+                string ErrorMessage = "Error 5.1: could not save User";
+                Logger.Debug(ErrorMessage);
+                MessageBox.Show(ErrorMessage);
+            }
+
             finally
             {
                 mySqlCnn?.Close();
