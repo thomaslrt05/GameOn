@@ -285,6 +285,10 @@ namespace GameOn.DataAccesLayer.Factories
                         totalPoints = Convert.ToInt32(result);
                     }
                 }
+                return totalPoints;
+            }catch(Exception e)
+            {
+                return 0;
             }
             finally
             {
@@ -292,7 +296,7 @@ namespace GameOn.DataAccesLayer.Factories
                 mySqlCnn?.Close();
             }
 
-            return totalPoints;
+           
         }
     }
 }

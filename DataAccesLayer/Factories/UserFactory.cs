@@ -315,31 +315,28 @@ namespace GameOn.DataAccesLayer.Factories
 
                     DateTime? userFirstParticipationDate = GetParticipationDate(user.Id);
 
-                  
-
-                    // Boucle pour chaque semaine depuis la première participation de l'utilisateur
                     if (userFirstParticipationDate.HasValue)
                     {
+
                         // Obtenez la date de début (lundi) et de fin (dimanche) de la semaine de participation de l'utilisateur
                         DateTime startOfWeek = userFirstParticipationDate.Value.Date.AddDays(-(int)userFirstParticipationDate.Value.DayOfWeek + (int)DayOfWeek.Monday);
                         DateTime endOfWeek = startOfWeek.AddDays(6);
 
                         // Obtenez les points pour la semaine de participation de l'utilisateur
                         int totalPoints = GetAllPointOfUserForWeek(user, startOfWeek, endOfWeek);
-
+                        
                         // Ajoutez les points à la liste
                         pointsByWeek.Add($"{startOfWeek.ToShortDateString()} - {endOfWeek.ToShortDateString()}", totalPoints);
+                        // Ajoutez les points par semaine pour cet utilisateur à la liste principale
+     
+                        
+                        pointsByUserAndWeek.Add(user, pointsByWeek);
                     }
 
-                    
-
-                    // Ajoutez les points par semaine pour cet utilisateur à la liste principale
-                    pointsByUserAndWeek.Add(user, pointsByWeek);
                 }
             }
             catch (Exception ex)
             {
-                // Gérez les exceptions ici
                 Console.WriteLine($"Une erreur est survenue : {ex.Message}");
             }
 
@@ -367,10 +364,20 @@ namespace GameOn.DataAccesLayer.Factories
                 mySqlCmd.Parameters.AddWithValue("@EndOfWeek", endOfWeek);
 
                 mySqlDataReader = mySqlCmd.ExecuteReader();
-                if (mySqlDataReader.Read())
+                if (!mySqlDataReader.IsDBNull(0))
                 {
                     totalPoints = mySqlDataReader.GetInt32(0);
                 }
+                else
+                {
+                    totalPoints = 0;
+                }
+                return totalPoints;
+
+            }
+            catch(Exception e )
+            {
+                return 0;
             }
             finally
             {
@@ -378,91 +385,8 @@ namespace GameOn.DataAccesLayer.Factories
                 mySqlCnn?.Close();
             }
 
-            return totalPoints;
         }
 
-
-        //------------- Fonctionne pas -----------
-        public Dictionary<User, Dictionary<string, int>> GetPointsByWeekAndDepartement(string departementName)
-        {
-            Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = new Dictionary<User, Dictionary<string, int>>();
-
-            try
-            {
-                List<User> users = GetAllUser();
-
-                foreach (User user in users)
-                {
-                    Dictionary<string, int> pointsByWeek = new Dictionary<string, int>();
-
-                    DateTime? userFirstParticipationDate = GetParticipationDate(user.Id);
-
-
-
-                    // Boucle pour chaque semaine depuis la première participation de l'utilisateur
-                    if (userFirstParticipationDate.HasValue)
-                    {
-                        // Obtenez la date de début (lundi) et de fin (dimanche) de la semaine de participation de l'utilisateur
-                        DateTime startOfWeek = userFirstParticipationDate.Value.Date.AddDays(-(int)userFirstParticipationDate.Value.DayOfWeek + (int)DayOfWeek.Monday);
-                        DateTime endOfWeek = startOfWeek.AddDays(6);
-
-                        // Obtenez les points pour la semaine de participation de l'utilisateur
-                        int totalPoints = GetAllPointOfUserFiltredByDepartementAndDate(user,departementName ,startOfWeek, endOfWeek);
-
-                        // Ajoutez les points à la liste
-                        pointsByWeek.Add($"{startOfWeek.ToShortDateString()} - {endOfWeek.ToShortDateString()}", totalPoints);
-                    }
-
-
-
-                    // Ajoutez les points par semaine pour cet utilisateur à la liste principale
-                    pointsByUserAndWeek.Add(user, pointsByWeek);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Gérez les exceptions ici
-                Console.WriteLine($"Une erreur est survenue : {ex.Message}");
-            }
-
-            return pointsByUserAndWeek;
-        }
-
-
-        public int GetAllPointOfUserFiltredByDepartementAndDate(User user, string departementName, DateTime startOfWeek, DateTime endOfWeek)
-        {
-            MySqlConnection? mySqlCnn = null;
-            MySqlDataReader? mySqlDataReader = null;
-            int totalPoints = 0;
-            try
-            {
-                mySqlCnn = new MySqlConnection(DAL.ConnectionString);
-                mySqlCnn.Open();
-                MySqlCommand mySqlCmd = mySqlCnn.CreateCommand();
-                mySqlCmd.CommandText = "SELECT SUM(PointWon)" +
-                                       "FROM sudokuparticipation" +
-                                        "WHERE User_Id IN(SELECT @Id FROM user WHERE Departement_Name = @DepartementName)" +
-                                        "AND StartDate >= @StartOfWeek AND EndDate <= @EndOfWeek";
-
-
-                mySqlCmd.Parameters.AddWithValue("@id", user.Id);
-                mySqlCmd.Parameters.AddWithValue("@DepartementName", departementName);
-                mySqlCmd.Parameters.AddWithValue("@StartOfWeek", startOfWeek);
-                mySqlCmd.Parameters.AddWithValue("@EndOfWeek", endOfWeek);
-                mySqlDataReader = mySqlCmd.ExecuteReader();
-                if (mySqlDataReader.Read())
-                {
-                    totalPoints = mySqlDataReader.GetInt32(0);
-                }
-            }
-            finally
-            {
-                mySqlDataReader?.Close();
-                mySqlCnn?.Close();
-            }
-            return totalPoints;
-        }
-        ///////////////////////////////////////////////////////////////////////////
 
         public DateTime? GetParticipationDate(int userId)
         {
@@ -491,9 +415,10 @@ namespace GameOn.DataAccesLayer.Factories
             {
                 mySqlDataReader?.Close();
                 mySqlCnn?.Close();
-            }
 
+            }
             return firstParticipationDate;
+
         }
 
         

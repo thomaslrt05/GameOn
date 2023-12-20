@@ -277,9 +277,7 @@ namespace GameOn.Views.Pages
 
 
 
-        //
-        // Fonctionne pas 
-        //
+      
         public void LoadFiltredScoreboardOfDepartementByWeek(string departementName)
         {
             try
@@ -317,15 +315,29 @@ namespace GameOn.Views.Pages
                     return;
                 }
 
-               
-                Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = dal.UserFact.GetPointsByWeekAndDepartement(departementName);
+                Dictionary<User, Dictionary<string, int>> pointsByUserAndWeek = dal.UserFact.GetPointsByWeek();
+                List<UserViewModel> weeklyRankingList = new List<UserViewModel>();
+                Departement currentDepart;
 
-                
-                List<UserViewModel> dataList = pointsByUserAndWeek
-                    .Select(kv => new UserViewModel(kv.Key, kv.Value.Sum(w => w.Value)))
-                    .ToList();
+                foreach (var userPointsEntry in pointsByUserAndWeek)
+                {
+                    
+                    User user = userPointsEntry.Key;
+                    currentDepart = dal.DepartementFact.Get(user.Departement.Id);
+                    if (departementName.Equals(currentDepart.Name))
+                    {
+                        Dictionary<string, int> pointsByWeek = userPointsEntry.Value;
+                        var lastWeekPoints = pointsByWeek.LastOrDefault();
+                        if (lastWeekPoints.Key != null)
+                        {
+                            int points = lastWeekPoints.Value;
+                            weeklyRankingList.Add(new UserViewModel(user, points));
+                        }
+                    }
+                    
+                }
 
-                dataGrid.ItemsSource = dataList;
+                dataGrid.ItemsSource = weeklyRankingList;
             }
             catch (Exception ex)
             {
