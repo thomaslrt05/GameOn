@@ -1,0 +1,48 @@
+﻿-- Création de la table département
+CREATE TABLE departement (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Création de la table user
+CREATE TABLE user (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    lastName VARCHAR(255) NOT NULL,
+    mail VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    departement INT,
+    FOREIGN KEY (departement) REFERENCES departement(Id)
+);
+
+-- Création de la table notification
+CREATE TABLE notification (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    content VARCHAR(255) NOT NULL,
+    isSeen BOOLEAN NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES user(Id)
+);
+
+-- Création de la table game
+CREATE TABLE sudoku (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    creationDate DATE NOT NULL,
+    grid LONGTEXT NOT NULL,
+    solutionGrid LONGTEXT NOT NULL,
+    isRanked BOOLEAN NOT NULL,
+    difficulty INT NOT NULL
+);
+
+-- Création de la table GameParticipation
+CREATE TABLE sudokuParticipation (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    EndDate DATETIME,
+    startDate DATETIME NOT NULL,
+    pointWon INT DEFAULT 0,
+    actualGrid LONGTEXT NOT NULL,
+    sudoku INT,
+    user_id INT,
+    FOREIGN KEY (sudoku) REFERENCES sudoku(id),
+    FOREIGN KEY (user_id) REFERENCES user(Id)
+); 

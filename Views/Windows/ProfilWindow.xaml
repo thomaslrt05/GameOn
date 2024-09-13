@@ -1,0 +1,52 @@
+<Window x:Class="GameOn.Views.Windows.ProfilWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GameOn.Views.Windows"
+        mc:Ignorable="d"
+        Title="ProfilWindow" Height="275" Width="275">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="139*"></ColumnDefinition>
+            <ColumnDefinition Width="111*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Column="0" Grid.Row="0" Content="Nom" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBlock Text="{Binding UserConnected.LastName}" Grid.Column="1" Grid.Row="0" Margin="0,2,0,1"/>
+
+        <Label Grid.Column="0" Content="Prénom" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,33,0,33" Grid.RowSpan="3"/>
+        <TextBlock Text="{Binding UserConnected.Name}" Grid.Column="1" Grid.Row="1" Margin="0,2,0,2"/>
+
+        <Label Grid.Column="0" Grid.Row="2" Content="Adresse mail" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <TextBlock Text="{Binding UserConnected.Mail}" Grid.Column="1" Grid.Row="2" Margin="0,2,0,1" />
+
+        <Label Grid.Column="0" Grid.Row="2" Content="Département" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,33,0,33" Grid.RowSpan="3"></Label>
+        <TextBlock Text="{Binding UserConnected.Departement.Name}" Grid.Column="1" Grid.Row="3" Margin="0,2,0,2"/>
+
+        <Label Grid.Column="0" Grid.Row="4" Content="Actuel mot de passe*" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"></Label>
+        <PasswordBox x:Name="currentPassword" Grid.Column="1" Grid.Row="4" Margin="0,1,0,2"/>
+
+        <Label Grid.Column="0" Grid.Row="4" Content="Nouveau mot de passe*" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,33,0,33" Grid.RowSpan="3"></Label>
+        <PasswordBox x:Name="newPassword" Grid.Column="1" Grid.Row="5" Margin="0,2,0,2"/>
+
+        <Label Grid.Column="0" Grid.Row="5" Content="Confirmer mot de passe*" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,33,0,33" Grid.RowSpan="3"></Label>
+        <PasswordBox x:Name="newPasswordComfirmed" Grid.Column="1" Grid.Row="6" Margin="0,2,0,2"/>
+
+
+        <Button Click="ExecuteModifyButton"  Content="Valider" Grid.Column="1" Grid.Row="7" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="11,1,10,2"/>
+
+    </Grid>
+</Window>

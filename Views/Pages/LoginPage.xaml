@@ -1,0 +1,33 @@
+﻿<Page x:Class="GameOn.Views.Pages.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GameOn.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="LoginPage">
+
+    <Grid>
+        <Image Source="/img/LoginPage.png" Stretch="UniformToFill"  ></Image>
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Login"></Label>
+                <TextBox Text="{Binding TxtEmail}" Width="200" Margin="5"/>
+                
+                <Label Content="Mot de passe"></Label>
+                <PasswordBox x:Name="password" Width="200"  Margin="5"/>
+
+                <Button Width="177" Height="39" Command="{Binding ChangePageCommand}">
+                    <Image Source="/img/ConnectButton.png"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</Page>
